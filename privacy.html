@@ -12,7 +12,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
 .logo{font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--agile);}
 .logo span{display:block;font-size:1rem;font-weight:700;color:var(--text);letter-spacing:0;text-transform:none;margin-top:.2rem;}
-.back-btn{padding:.4rem 1rem;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:.8rem;cursor:pointer;text-decoration:none;transition:all .2s;}
+.back-btn{padding:.4rem 1rem;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:.8rem;text-decoration:none;transition:all .2s;}
 .back-btn:hover{border-color:var(--agile);color:var(--agile);}
 main{max-width:780px;margin:0 auto;padding:3rem 2rem 5rem;}
 .page-label{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--agile);margin-bottom:.7rem;}
@@ -24,14 +24,19 @@ p{font-size:.88rem;color:var(--muted);line-height:1.8;margin-bottom:.75rem;}
 ul{list-style:none;display:flex;flex-direction:column;gap:.4rem;margin-bottom:.75rem;}
 ul li{font-size:.86rem;color:var(--muted);padding-left:1.1rem;position:relative;line-height:1.7;}
 ul li::before{content:'→';position:absolute;left:0;color:var(--agile);font-size:.72rem;top:.1rem;}
-.highlight-box{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--agile);border-radius:10px;padding:1rem 1.2rem;margin:1rem 0;}
-.highlight-box p{margin-bottom:0;}
+.hi-box{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--agile);border-radius:10px;padding:1rem 1.2rem;margin:1rem 0;}
+.hi-box p{margin-bottom:0;}
+.warn-box{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.25);border-left:3px solid #f59e0b;border-radius:10px;padding:1rem 1.2rem;margin:1rem 0;}
+.warn-box p{margin-bottom:0;color:var(--text);}
+.warn-title{font-family:'Space Mono',monospace;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#f59e0b;margin-bottom:.35rem;}
 .contact-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.4rem;margin-top:1rem;}
-.contact-box p{margin-bottom:.3rem;}
-.contact-box a{color:var(--agile);text-decoration:none;}
-.contact-box a:hover{text-decoration:underline;}
+a{color:var(--agile);text-decoration:none;}
+a:hover{text-decoration:underline;}
+code{font-family:'Space Mono',monospace;font-size:.82rem;color:var(--agile);background:var(--card);padding:.1rem .4rem;border-radius:4px;}
+table{width:100%;border-collapse:collapse;font-size:.82rem;margin:.8rem 0;}
+th{background:var(--card);color:var(--agile);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;padding:.55rem .75rem;text-align:left;border-bottom:1px solid var(--border);}
+td{padding:.5rem .75rem;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top;line-height:1.6;}
 footer{text-align:center;padding:2rem;border-top:1px solid var(--border);font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);}
-footer a{color:var(--agile);text-decoration:none;}
 </style>
 </head>
 <body>
@@ -46,80 +51,120 @@ footer a{color:var(--agile);text-decoration:none;}
   <h1>Política de Privacidad</h1>
   <span class="updated">Última actualización: junio 2025</span>
 
-  <div class="highlight-box">
-    <p>Esta guía de estudio es un recurso educativo de uso libre. <strong style="color:var(--text);">No recopilamos, almacenamos ni compartimos ningún dato personal.</strong> Todo funciona directamente en tu navegador.</p>
+  <div class="hi-box">
+    <p>Esta Política describe cómo la <strong style="color:var(--text);">PMI-ACP Guía de Estudio</strong> gestiona la información de los usuarios, incluyendo el uso de <strong style="color:var(--text);">Google Analytics</strong> para analítica y <strong style="color:var(--text);">Google AdSense</strong> para publicidad.</p>
   </div>
 
   <section>
-    <h2>1. Información General</h2>
-    <p>La <strong style="color:var(--text);">PMI-ACP Guía Completa de Estudio</strong> ("la Guía") es una aplicación web estática de carácter educativo, diseñada para ayudar a profesionales a prepararse para la certificación PMI-ACP (Agile Certified Practitioner) del Project Management Institute.</p>
-    <p>Esta Política de Privacidad describe cómo se gestiona la información cuando utilizas la Guía, publicada a través de GitHub Pages.</p>
+    <h2>1. Responsable</h2>
+    <p>La <strong style="color:var(--text);">PMI-ACP Guía Completa de Estudio</strong> es un recurso educativo publicado a través de GitHub Pages. Para cualquier consulta relacionada con privacidad puedes abrir un <em>issue</em> en el repositorio de GitHub correspondiente.</p>
   </section>
 
   <section>
-    <h2>2. Datos que NO Recopilamos</h2>
-    <p>La Guía <strong style="color:var(--text);">no recopila ningún tipo de dato personal</strong>. Específicamente:</p>
+    <h2>2. Servicios de Terceros y Datos que Recopilan</h2>
+    <p>No recopilamos datos personales de forma directa. Sin embargo, utilizamos servicios de terceros que pueden recopilar información de uso de forma automática:</p>
+    <table>
+      <thead><tr><th>Servicio</th><th>Finalidad</th><th>Datos que puede recopilar</th></tr></thead>
+      <tbody>
+        <tr><td><strong style="color:var(--text);">Google Analytics GA4</strong></td><td>Analítica web</td><td>IP anonimizada, páginas visitadas, duración de sesión, dispositivo, navegador, país</td></tr>
+        <tr><td><strong style="color:var(--text);">Google AdSense</strong></td><td>Publicidad personalizada</td><td>Cookies publicitarias, intereses inferidos, historial de navegación entre sitios, identificadores de dispositivo</td></tr>
+        <tr><td><strong style="color:var(--text);">Google Fonts</strong></td><td>Tipografía</td><td>Solicitud de red a servidores de Google (IP)</td></tr>
+        <tr><td><strong style="color:var(--text);">GitHub Pages</strong></td><td>Alojamiento web</td><td>IP, agente de usuario, fecha y hora de acceso</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>3. Google Analytics (GA4)</h2>
+    <p>Usamos <strong style="color:var(--text);">Google Analytics 4</strong> (<code>G-GBW4V873BV</code>) para entender cómo los usuarios interactúan con la Guía y mejorar su contenido. Los datos se recopilan de forma anonimizada mediante cookies.</p>
     <ul>
-      <li>No solicitamos nombre, correo electrónico ni ningún dato de identificación</li>
-      <li>No usamos cookies propias ni rastreadores de terceros</li>
-      <li>No integramos Google Analytics, Facebook Pixel ni ninguna herramienta de analítica</li>
-      <li>No creamos cuentas de usuario ni perfiles</li>
-      <li>No enviamos datos a ningún servidor externo</li>
-      <li>No almacenamos información en bases de datos remotas</li>
+      <li>La dirección IP se anonimiza automáticamente antes de ser procesada</li>
+      <li>No se recopilan datos que permitan identificarte personalmente</li>
+      <li>Los datos se procesan en servidores de Google LLC (EE. UU.)</li>
     </ul>
+    <p>Puedes desactivar el rastreo instalando el complemento oficial: <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics Opt-out Add-on</a>.</p>
+    <p>Más información: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Política de Privacidad de Google</a>.</p>
   </section>
 
   <section>
-    <h2>3. Almacenamiento Local</h2>
-    <p>El progreso de estudio (módulos vistos, temas marcados) se gestiona únicamente en la memoria del navegador durante la sesión activa. Al cerrar la pestaña o el navegador, dicha información no se conserva.</p>
-    <p>La Guía no utiliza <code style="font-family:'Space Mono',monospace;font-size:.82rem;color:var(--agile);background:var(--card);padding:.1rem .4rem;border-radius:4px;">localStorage</code>, <code style="font-family:'Space Mono',monospace;font-size:.82rem;color:var(--agile);background:var(--card);padding:.1rem .4rem;border-radius:4px;">sessionStorage</code> ni IndexedDB para retener información entre sesiones.</p>
-  </section>
-
-  <section>
-    <h2>4. Fuentes Externas</h2>
-    <p>La Guía carga recursos tipográficos desde <strong style="color:var(--text);">Google Fonts</strong> para mejorar la experiencia visual. Esta conexión puede generar una solicitud de red a los servidores de Google, lo cual está sujeto a la <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style="color:var(--agile);">Política de Privacidad de Google</a>.</p>
-    <p>Si deseas evitar esta conexión, puedes usar la Guía descargando el archivo HTML y abriéndolo localmente sin conexión a internet, o eliminando la línea de importación de Google Fonts del código fuente.</p>
-  </section>
-
-  <section>
-    <h2>5. GitHub Pages</h2>
-    <p>La Guía está alojada en <strong style="color:var(--text);">GitHub Pages</strong>, servicio de GitHub, Inc. GitHub puede registrar datos de acceso básicos como dirección IP y agente de usuario con fines operativos y de seguridad, según su propia política de privacidad.</p>
-    <p>Para más información consulta la <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer" style="color:var(--agile);">Política de Privacidad de GitHub</a>.</p>
-  </section>
-
-  <section>
-    <h2>6. Derechos del Usuario</h2>
-    <p>Dado que no recopilamos ningún dato personal, no existe información que rectificar, eliminar ni exportar. No obstante, si tienes alguna consulta relacionada con la privacidad de esta Guía, puedes contactarnos a través del repositorio en GitHub.</p>
-  </section>
-
-  <section>
-    <h2>7. Propiedad Intelectual</h2>
-    <p>El contenido educativo de esta Guía es de elaboración propia con fines de estudio. Las referencias a marcos de trabajo como Scrum, Kanban, SAFe, XP o Lean, y a la certificación PMI-ACP, son de sus respectivos titulares. Esta Guía no está afiliada ni patrocinada por el Project Management Institute (PMI) ni por ninguna otra organización certificadora.</p>
-  </section>
-
-  <section>
-    <h2>8. Uso Aceptable</h2>
-    <p>Esta Guía se proporciona con fines exclusivamente educativos. Queda prohibido:</p>
+    <h2>4. Google AdSense y Publicidad</h2>
+    <p>Usamos <strong style="color:var(--text);">Google AdSense</strong> (<code>ca-pub-8586587160125362</code>) para mostrar anuncios que ayudan a mantener este recurso educativo gratuito. AdSense puede mostrar anuncios personalizados basados en tus intereses y comportamiento de navegación.</p>
+    <div class="warn-box">
+      <div class="warn-title">⚠️ Publicidad personalizada</div>
+      <p>Google AdSense utiliza cookies para mostrar anuncios relevantes. Google puede usar información sobre tu actividad en este y otros sitios web para personalizar los anuncios que ves.</p>
+    </div>
+    <p>AdSense puede usar las siguientes tecnologías:</p>
     <ul>
-      <li>Comercializar o redistribuir el contenido con fines de lucro sin autorización</li>
-      <li>Presentar el contenido como material oficial del PMI</li>
-      <li>Modificar el contenido de forma que induzca a error sobre los temas de certificación</li>
+      <li>Cookies de publicidad de Google (<code>IDE</code>, <code>ANID</code>, <code>NID</code>)</li>
+      <li>Seguimiento entre sitios (cross-site tracking)</li>
+      <li>Identificadores de dispositivo en plataformas móviles</li>
+      <li>Señales de interés basadas en búsquedas y visitas anteriores</li>
     </ul>
+    <p>Gestiona tus preferencias en: <a href="https://adssettings.google.com" target="_blank" rel="noopener">adssettings.google.com</a></p>
+    <p>Más información: <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Cómo usa Google la información de sitios que usan sus servicios</a>.</p>
   </section>
 
   <section>
-    <h2>9. Cambios a esta Política</h2>
-    <p>Cualquier actualización a esta Política de Privacidad se reflejará en la fecha indicada al inicio de este documento. Al ser un recurso estático sin registro de usuarios, no existe mecanismo de notificación activa de cambios.</p>
+    <h2>5. Cookies</h2>
+    <p>Esta web usa únicamente cookies de terceros a través de Google Analytics y Google AdSense. No usamos cookies propias.</p>
+    <table>
+      <thead><tr><th>Cookie</th><th>Origen</th><th>Duración</th><th>Finalidad</th></tr></thead>
+      <tbody>
+        <tr><td><code>_ga</code></td><td>Google Analytics</td><td>2 años</td><td>Distinguir usuarios únicos</td></tr>
+        <tr><td><code>_ga_*</code></td><td>Google Analytics</td><td>2 años</td><td>Mantener estado de sesión GA4</td></tr>
+        <tr><td><code>IDE</code></td><td>Google AdSense</td><td>13 meses</td><td>Publicidad personalizada</td></tr>
+        <tr><td><code>NID</code></td><td>Google</td><td>6 meses</td><td>Preferencias del usuario</td></tr>
+      </tbody>
+    </table>
+    <p>Puedes bloquear cookies desde la configuración de tu navegador. Bloquear cookies de terceros no afecta el funcionamiento educativo de la Guía, solo la visualización de anuncios.</p>
   </section>
 
   <section>
-    <h2>10. Contacto</h2>
+    <h2>6. Base Legal del Tratamiento</h2>
+    <p>El uso de Google Analytics responde al <strong style="color:var(--text);">interés legítimo</strong> del responsable en mejorar el sitio. El uso de Google AdSense se basa en mantener el recurso educativo financiado sin costo para el usuario.</p>
+    <p>Donde aplique el <strong style="color:var(--text);">GDPR</strong> (Unión Europea) u otras normativas similares, la base legal es el <strong style="color:var(--text);">consentimiento</strong> del usuario. Al continuar navegando por este sitio aceptas el uso de las cookies descritas.</p>
+  </section>
+
+  <section>
+    <h2>7. Transferencias Internacionales</h2>
+    <p>Google LLC está ubicado en los Estados Unidos. Los datos recopilados por Google Analytics y AdSense pueden ser transferidos y procesados en servidores fuera de tu país. Google está adherido al <em>EU-U.S. Data Privacy Framework</em>.</p>
+  </section>
+
+  <section>
+    <h2>8. Almacenamiento Local</h2>
+    <p>El progreso de estudio (módulos vistos, temas marcados) se gestiona únicamente en la memoria del navegador durante la sesión activa. Al cerrar la pestaña esa información no se conserva. La Guía no usa <code>localStorage</code> ni bases de datos remotas propias.</p>
+  </section>
+
+  <section>
+    <h2>9. Tus Derechos</h2>
+    <p>Según tu jurisdicción puedes ejercer los siguientes derechos sobre los datos tratados por servicios de terceros:</p>
+    <ul>
+      <li><strong style="color:var(--text);">Acceso</strong> — solicitar información sobre los datos recopilados</li>
+      <li><strong style="color:var(--text);">Rectificación</strong> — corregir datos inexactos</li>
+      <li><strong style="color:var(--text);">Supresión</strong> — solicitar la eliminación de tus datos</li>
+      <li><strong style="color:var(--text);">Oposición</strong> — oponerte a la publicidad personalizada</li>
+      <li><strong style="color:var(--text);">Portabilidad</strong> — recibir tus datos en formato estructurado</li>
+    </ul>
+    <p>Para ejercer estos derechos respecto a los datos de Google visita <a href="https://myaccount.google.com" target="_blank" rel="noopener">myaccount.google.com</a>.</p>
+  </section>
+
+  <section>
+    <h2>10. Propiedad Intelectual</h2>
+    <p>El contenido educativo de esta Guía es de elaboración propia. Las referencias a Scrum, Kanban, SAFe, XP, Lean y la certificación PMI-ACP corresponden a sus respectivos titulares. Esta Guía no está afiliada ni patrocinada por el Project Management Institute (PMI).</p>
+  </section>
+
+  <section>
+    <h2>11. Cambios a esta Política</h2>
+    <p>Cualquier actualización se reflejará en la fecha indicada al inicio del documento. Te recomendamos revisar esta página periódicamente si eres usuario frecuente del sitio.</p>
+  </section>
+
+  <section>
+    <h2>12. Contacto</h2>
     <div class="contact-box">
       <p style="color:var(--text);font-weight:600;margin-bottom:.6rem;">¿Tienes alguna pregunta?</p>
-      <p>Puedes abrir un <em>issue</em> directamente en el repositorio de GitHub donde está publicada esta Guía. Responderemos a la brevedad posible.</p>
+      <p style="color:var(--muted);">Puedes abrir un <em>issue</em> en el repositorio de GitHub donde está publicada esta Guía. Responderemos a la brevedad posible.</p>
     </div>
   </section>
-
 </main>
 
 <footer>
