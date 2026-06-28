@@ -1,0 +1,8 @@
+# robots.txt — PMI-ACP Guía de Estudio
+# https://jarias65.github.io/
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://jarias65.github.io/sitemap.xml
