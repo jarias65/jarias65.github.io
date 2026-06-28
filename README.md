@@ -4,11 +4,7 @@ Guía interactiva para preparar la certificación **Agile Certified Practitioner
 
 ## 🌐 Ver en línea
 
-Una vez activado GitHub Pages, la guía estará disponible en:
-
-```
-https://<tu-usuario>.github.io/<nombre-del-repo>/
-```
+[https://jarias65.github.io/](https://jarias65.github.io/)
 
 ## 📚 Contenido
 
@@ -18,21 +14,16 @@ https://<tu-usuario>.github.io/<nombre-del-repo>/
 - Plan de estudio de 8 semanas
 - Tracker de progreso por módulo
 
-## 🚀 Cómo activar GitHub Pages
-
-1. Sube los archivos a un repositorio en GitHub
-2. Ve a **Settings → Pages**
-3. En **Branch** selecciona `main` y carpeta `/ (root)`
-4. Haz clic en **Save**
-5. En unos minutos tu guía estará online
-
 ## 📁 Archivos
 
 | Archivo | Descripción |
 |---|---|
 | `index.html` | Guía completa (página principal) |
+| `privacy.html` | Política de privacidad |
+| `ads.txt` | Autorización Google AdSense |
+| `sitemap.xml` | Mapa del sitio para Google Search Console |
 | `README.md` | Este archivo |
 
 ---
 
-Creado con Claude · PMI-ACP Study Guide
+Creado con Claude · PMI-ACP Study Guide · [https://jarias65.github.io/](https://jarias65.github.io/)
