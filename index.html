@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMI-ACP — Guía Completa</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+:root{
+  --bg:#0a0e1a;--surface:#111827;--card:#161d2e;--card2:#1a2235;
+  --border:#1e2d45;--agile:#00d4ff;--dim:rgba(0,212,255,.10);
+  --muted:#64748b;--text:#e2e8f0;
+  --c0:#00d4ff;--c1:#7c3aed;--c2:#f59e0b;--c3:#10b981;
+  --c4:#f43f5e;--c5:#8b5cf6;--c6:#06b6d4;--sb:220px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);display:flex;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--surface);}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+#sidebar{width:var(--sb);min-width:var(--sb);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s;}
+.sb-logo{padding:1.2rem 1rem .9rem;border-bottom:1px solid var(--border);}
+.sb-tag{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.15em;color:var(--agile);text-transform:uppercase;display:block;margin-bottom:.3rem;}
+.sb-name{font-weight:700;font-size:1rem;line-height:1.2;}
+.sb-search{padding:.6rem .9rem;border-bottom:1px solid var(--border);}
+.sb-search input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.38rem .6rem;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:.75rem;outline:none;}
+.sb-search input:focus{border-color:var(--agile);}
+.sb-nav{overflow-y:auto;flex:1;padding:.3rem 0;}
+.sb-group{padding:.4rem .9rem .15rem;font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+.sb-item{display:flex;align-items:center;gap:.5rem;padding:.48rem .9rem;cursor:pointer;font-size:.79rem;color:var(--muted);border-left:2px solid transparent;transition:all .15s;user-select:none;}
+.sb-item:hover{background:rgba(255,255,255,.02);color:var(--text);}
+.sb-item.active{background:var(--dim);color:var(--agile);border-left-color:var(--agile);}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .15s;}
+.sb-item.active .sb-dot,.sb-item:hover .sb-dot{background:var(--agile);}
+.sb-prog{padding:.7rem .9rem .9rem;border-top:1px solid var(--border);}
+.sb-prog-lbl{display:flex;justify-content:space-between;font-size:.63rem;color:var(--muted);margin-bottom:.35rem;}
+.sb-prog-lbl span:last-child{color:var(--agile);}
+.sb-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.sb-fill{height:100%;background:linear-gradient(90deg,var(--agile),#a78bfa);border-radius:2px;width:0%;transition:width .4s;}
+#main{margin-left:var(--sb);flex:1;min-height:100vh;display:flex;flex-direction:column;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.8rem;border-bottom:1px solid var(--border);background:rgba(10,14,26,.92);backdrop-filter:blur(12px);position:sticky;top:0;z-index:50;}
+.topbar-title{font-size:.88rem;font-weight:600;}
+.topbar-badge{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--agile);background:rgba(0,212,255,.1);padding:.18rem .65rem;border-radius:100px;}
+.hamburger{display:none;background:none;border:none;color:var(--text);font-size:1.2rem;cursor:pointer;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;}
+.overlay.show{display:block;}
+.panel{display:none;padding:2rem 2rem 4rem;max-width:980px;}
+.panel.active{display:block;}
+.lbl{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--agile);margin-bottom:.55rem;}
+.ptitle{font-size:clamp(1.6rem,4vw,2.5rem);font-weight:700;letter-spacing:-.02em;line-height:1.1;margin-bottom:.7rem;}
+.pdesc{color:var(--muted);font-size:.9rem;line-height:1.7;max-width:600px;margin-bottom:2rem;}
+.sh{font-size:1rem;font-weight:600;margin:1.6rem 0 .7rem;}
+.grad{background:linear-gradient(135deg,var(--agile) 0%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+hr.dv{border:none;height:1px;background:var(--border);margin:1.4rem 0;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:1.2rem;}
+.card-top{border-top:3px solid var(--card-color,var(--agile));}
+.ct{font-family:'Space Mono',monospace;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--card-color,var(--agile));margin-bottom:.7rem;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.ga{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.9rem;}
+.ul{list-style:none;display:flex;flex-direction:column;gap:.32rem;}
+.ul li{font-size:.78rem;color:var(--muted);padding-left:1rem;position:relative;line-height:1.5;}
+.ul li::before{content:'→';position:absolute;left:0;color:var(--agile);font-size:.68rem;}
+.hi{border-radius:11px;padding:.9rem 1.1rem;margin:.8rem 0;}
+.hi-info{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);}
+.hi-warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);}
+.hi-ok{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);}
+.hi-title{font-family:'Space Mono',monospace;font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem;}
+.hi-info .hi-title{color:var(--agile);}.hi-warn .hi-title{color:var(--c2);}.hi-ok .hi-title{color:var(--c3);}
+.hi p{font-size:.8rem;line-height:1.65;color:var(--text);}
+.tbl{width:100%;border-collapse:collapse;font-size:.78rem;margin:.7rem 0;}
+.tbl th{background:var(--card2);color:var(--agile);font-size:.67rem;text-transform:uppercase;letter-spacing:.05em;padding:.55rem .75rem;text-align:left;border-bottom:1px solid var(--border);}
+.tbl td{padding:.5rem .75rem;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top;}
+.tbl tr:hover td{background:rgba(255,255,255,.012);}
+.acc{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:.5rem;}
+.acc-h{display:flex;justify-content:space-between;align-items:center;padding:.75rem 1rem;cursor:pointer;font-size:.84rem;font-weight:600;transition:background .15s;user-select:none;}
+.acc-h:hover{background:rgba(255,255,255,.02);}
+.acc.open .acc-h{background:rgba(0,212,255,.07);}
+.acc-arrow{color:var(--agile);font-size:.7rem;transition:transform .25s;}
+.acc.open .acc-arrow{transform:rotate(180deg);}
+.acc-body{display:none;padding:.1rem 1rem .9rem;font-size:.8rem;color:var(--muted);line-height:1.7;}
+.acc.open .acc-body{display:block;}
+.pctr{counter-reset:p;}
+.pi{counter-increment:p;display:flex;gap:.7rem;align-items:flex-start;background:var(--card);border-radius:9px;padding:.7rem .95rem;margin-bottom:.4rem;}
+.pi::before{content:counter(p,'decimal-leading-zero');font-family:'Space Mono',monospace;font-size:.6rem;color:var(--agile);flex-shrink:0;padding-top:.1rem;}
+.pi p{font-size:.79rem;color:var(--muted);line-height:1.5;}
+.dbr{display:flex;align-items:center;gap:1rem;margin-bottom:.6rem;}
+.dbr-lbl{font-size:.75rem;flex:0 0 185px;color:var(--text);}
+.dbr-track{flex:1;height:7px;background:var(--border);border-radius:4px;overflow:hidden;}
+.dbr-fill{height:100%;border-radius:4px;width:0;transition:width 1.3s cubic-bezier(.16,1,.3,1);}
+.dbr-pct{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--muted);flex:0 0 30px;text-align:right;}
+.formula{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:.75rem 1.1rem;margin:.5rem 0;font-family:'Space Mono',monospace;font-size:.82rem;color:var(--agile);}
+.formula small{display:block;font-family:'Space Grotesk',sans-serif;font-size:.7rem;color:var(--muted);margin-top:.3rem;}
+.fc-scene{perspective:800px;margin:.5rem 0 1rem;}
+.fc-card{position:relative;width:100%;min-height:155px;transform-style:preserve-3d;transition:transform .5s;cursor:pointer;border-radius:14px;}
+.fc-card.flipped{transform:rotateY(180deg);}
+.fc-face{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:1.4rem;text-align:center;}
+.fc-front{background:var(--card);border:1px solid var(--border);}
+.fc-back{background:var(--card2);border:1px solid var(--agile);transform:rotateY(180deg);}
+.fc-label{font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--agile);margin-bottom:.55rem;}
+.fc-text{font-size:.9rem;font-weight:500;line-height:1.5;}
+.fc-hint{font-size:.68rem;color:var(--muted);margin-top:.75rem;}
+.fc-nav{display:flex;justify-content:space-between;align-items:center;}
+.fc-ctr{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted);}
+.quiz-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.6rem;}
+.quiz-q{font-weight:600;font-size:.92rem;line-height:1.5;margin-bottom:1.2rem;}
+.quiz-opts{display:flex;flex-direction:column;gap:.45rem;margin-bottom:1rem;}
+.quiz-opt{padding:.7rem .95rem;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:.8rem;text-align:left;cursor:pointer;transition:all .15s;}
+.quiz-opt:hover:not(:disabled){border-color:var(--agile);background:var(--dim);}
+.quiz-opt.correct{background:rgba(16,185,129,.12);border-color:#10b981;color:#10b981;}
+.quiz-opt.wrong{background:rgba(244,63,94,.12);border-color:#f43f5e;color:#f43f5e;}
+.quiz-fb{font-size:.8rem;padding:.65rem .9rem;border-radius:8px;display:none;line-height:1.65;margin-bottom:1rem;}
+.quiz-fb.show{display:block;}
+.quiz-fb.ok{background:rgba(16,185,129,.1);color:#10b981;border:1px solid rgba(16,185,129,.3);}
+.quiz-fb.fail{background:rgba(244,63,94,.1);color:#f43f5e;border:1px solid rgba(244,63,94,.3);}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;}
+.quiz-ctr{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted);}
+.chk{display:flex;align-items:center;gap:.65rem;padding:.58rem .85rem;border-radius:9px;border:1px solid var(--border);cursor:pointer;transition:all .15s;margin-bottom:.4rem;user-select:none;}
+.chk:hover{background:rgba(255,255,255,.02);}
+.chk.done{background:rgba(0,212,255,.05);border-color:rgba(0,212,255,.2);}
+.chk-box{width:16px;height:16px;border-radius:4px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.6rem;font-weight:700;color:#000;transition:all .2s;}
+.chk.done .chk-box{background:var(--agile);border-color:var(--agile);}
+.chk-text{font-size:.8rem;flex:1;}
+.chk.done .chk-text{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--muted);}
+.chk-tag{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);}
+.prog-bar{height:5px;background:var(--border);border-radius:3px;margin-top:1.1rem;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--agile),#a78bfa);border-radius:3px;transition:width .4s;width:0%;}
+.prog-lbl{font-family:'Space Mono',monospace;font-size:.67rem;color:var(--muted);margin-top:.4rem;text-align:right;}
+.btn{padding:.52rem 1.25rem;border-radius:8px;border:none;background:var(--agile);color:#000;font-family:'Space Grotesk',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:opacity .2s;}
+.btn:hover{opacity:.85;}
+.btn:disabled{opacity:.4;cursor:default;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);}
+.btn-ghost:hover{border-color:var(--agile);color:var(--agile);opacity:1;}
+.tl{position:relative;padding-left:1.7rem;}
+.tl::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--agile),var(--c1),transparent);}
+.tl-item{position:relative;margin-bottom:2rem;}
+.tl-dot{position:absolute;left:-2rem;top:.22rem;width:10px;height:10px;border-radius:50%;border:2px solid var(--bg);}
+.tl-week{font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.2rem;}
+.tl-title{font-weight:600;font-size:.9rem;margin-bottom:.3rem;}
+.tl-desc{font-size:.78rem;color:var(--muted);line-height:1.6;margin-bottom:.5rem;}
+.tags{display:flex;flex-wrap:wrap;gap:.32rem;}
+.tag{padding:.13rem .52rem;border-radius:100px;font-size:.6rem;font-family:'Space Mono',monospace;border:1px solid var(--border);color:var(--muted);}
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:.65rem;max-width:680px;margin-top:1.5rem;}
+.mod-btn{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.9rem;cursor:pointer;transition:all .2s;text-align:left;}
+.mod-btn:hover{border-color:var(--agile);transform:translateY(-2px);}
+.val-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--agile);border-radius:11px;padding:1rem;}
+.val-main{font-weight:600;font-size:.87rem;}
+.val-over{font-size:.73rem;color:var(--muted);margin-top:.2rem;}
+.mc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.7rem;margin:.8rem 0;}
+.mc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.9rem;text-align:center;}
+.mc-val{font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--agile);}
+.mc-lbl{font-size:.68rem;color:var(--muted);margin-top:.2rem;line-height:1.4;}
+.hero-bg{position:relative;}
+.hero-bg::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+.hero-bg>*{position:relative;}
+@media(max-width:800px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  .hamburger{display:block;}
+  .panel{padding:1.4rem 1rem 3rem;}
+  .g2,.g3{grid-template-columns:1fr;}
+  .dbr-lbl{flex:0 0 120px;}
+}
+/* ── MODULE NAV BAR ── */
+.mod-nav-bar{display:none;align-items:center;gap:.4rem;padding:.5rem 1.8rem;border-bottom:1px solid var(--border);background:var(--surface);overflow-x:auto;white-space:nowrap;scrollbar-width:none;}
+.mod-nav-bar::-webkit-scrollbar{display:none;}
+.mod-nav-bar.visible{display:flex;}
+.mnb-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .65rem;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:.72rem;cursor:pointer;flex-shrink:0;transition:all .15s;white-space:nowrap;}
+.mnb-btn:hover{border-color:var(--agile);color:var(--agile);}
+.mnb-btn.active{background:var(--dim);border-color:var(--agile);color:var(--agile);}
+.mnb-btn.done-m{border-color:rgba(16,185,129,.4);color:var(--c3);}
+.mnb-btn.done-m.active{background:rgba(16,185,129,.1);}
+.mnb-sep{width:1px;height:14px;background:var(--border);flex-shrink:0;margin:0 .1rem;}
+.mnb-prev,.mnb-next{padding:.3rem .55rem;font-size:.8rem;}
+</style>
+</head>
+<body>
+<div class="overlay" id="overlay"></div>
+<nav id="sidebar">
+  <div class="sb-logo"><span class="sb-tag">◆ PMI-ACP</span><div class="sb-name">Guía Completa<br>de Estudio</div></div>
+  <div class="sb-search"><input type="text" id="sb-input" placeholder="Buscar tema…"></div>
+  <div class="sb-nav" id="sb-nav">
+    <div class="sb-group" data-group>Inicio</div>
+    <div class="sb-item active" data-id="home"><span class="sb-dot"></span>Dashboard</div>
+    <div class="sb-item" data-id="overview"><span class="sb-dot"></span>Vista General</div>
+    <div class="sb-group" data-group>Módulos de Estudio</div>
+    <div class="sb-item" data-id="m1"><span class="sb-dot"></span>M1 · Manifiesto Ágil</div>
+    <div class="sb-item" data-id="m2"><span class="sb-dot"></span>M2 · Scrum</div>
+    <div class="sb-item" data-id="m3"><span class="sb-dot"></span>M3 · Kanban</div>
+    <div class="sb-item" data-id="m4"><span class="sb-dot"></span>M4 · XP</div>
+    <div class="sb-item" data-id="m5"><span class="sb-dot"></span>M5 · Lean Agile</div>
+    <div class="sb-item" data-id="m6"><span class="sb-dot"></span>M6 · Estimación</div>
+    <div class="sb-item" data-id="m7"><span class="sb-dot"></span>M7 · Backlog & Priorización</div>
+    <div class="sb-item" data-id="m8"><span class="sb-dot"></span>M8 · Métricas Ágiles</div>
+    <div class="sb-item" data-id="m9"><span class="sb-dot"></span>M9 · Equipos & Liderazgo</div>
+    <div class="sb-item" data-id="m10"><span class="sb-dot"></span>M10 · Escalado Ágil</div>
+    <div class="sb-item" data-id="m11"><span class="sb-dot"></span>M11 · Riesgos & Contratos</div>
+    <div class="sb-group" data-group>Práctica</div>
+    <div class="sb-item" data-id="flashcards"><span class="sb-dot"></span>🃏 Flashcards</div>
+    <div class="sb-item" data-id="quiz"><span class="sb-dot"></span>🧠 Quiz de Práctica</div>
+    <div class="sb-item" data-id="plan"><span class="sb-dot"></span>📅 Plan 8 Semanas</div>
+    <div class="sb-item" data-id="tracker"><span class="sb-dot"></span>✅ Mi Progreso</div>
+  </div>
+  <div class="sb-prog">
+    <div class="sb-prog-lbl"><span>Progreso general</span><span id="sb-pct">0%</span></div>
+    <div class="sb-bar"><div class="sb-fill" id="sb-fill"></div></div>
+  </div>
+</nav>
+<div id="main">
+  <div class="topbar">
+    <button class="hamburger" id="hbg">☰</button>
+    <span class="topbar-title" id="top-title">Dashboard</span>
+    <span class="topbar-badge" id="top-badge">0 / 22 temas</span>
+  </div>
+
+  <!-- MODULE NAV BAR -->
+  <div class="mod-nav-bar" id="mod-nav-bar">
+    <button class="mnb-btn mnb-prev" id="mnb-prev" title="Módulo anterior">←</button>
+    <div class="mnb-sep"></div>
+    <button class="mnb-btn" data-nav="m1" id="mnb-m1">📜 M1</button>
+    <button class="mnb-btn" data-nav="m2" id="mnb-m2">🔄 M2</button>
+    <button class="mnb-btn" data-nav="m3" id="mnb-m3">🏷️ M3</button>
+    <button class="mnb-btn" data-nav="m4" id="mnb-m4">💻 M4</button>
+    <button class="mnb-btn" data-nav="m5" id="mnb-m5">♻️ M5</button>
+    <button class="mnb-btn" data-nav="m6" id="mnb-m6">🎯 M6</button>
+    <button class="mnb-btn" data-nav="m7" id="mnb-m7">📋 M7</button>
+    <button class="mnb-btn" data-nav="m8" id="mnb-m8">📊 M8</button>
+    <button class="mnb-btn" data-nav="m9" id="mnb-m9">🤝 M9</button>
+    <button class="mnb-btn" data-nav="m10" id="mnb-m10">🏗️ M10</button>
+    <button class="mnb-btn" data-nav="m11" id="mnb-m11">🛡️ M11</button>
+    <div class="mnb-sep"></div>
+    <button class="mnb-btn mnb-next" id="mnb-next" title="Módulo siguiente">→</button>
+  </div>
+
+<!-- HOME -->
+<div class="panel active hero-bg" id="panel-home">
+  <div id="hero-mini" style="display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;padding:.5rem 0 1rem;">
+    <div>
+      <div style="font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--agile);margin-bottom:.2rem;">◆ PMI-ACP</div>
+      <div style="font-weight:700;font-size:1.1rem;line-height:1.2;"><span class="grad">PMI-ACP</span> — Guía de Estudio</div>
+    </div>
+    <div style="display:flex;gap:1.2rem;">
+      <div style="text-align:center;"><div style="font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;color:var(--agile);">120</div><div style="font-family:'Space Mono',monospace;font-size:.5rem;color:var(--muted);text-transform:uppercase;">Preguntas</div></div>
+      <div style="text-align:center;"><div style="font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;color:var(--agile);">3h</div><div style="font-family:'Space Mono',monospace;font-size:.5rem;color:var(--muted);text-transform:uppercase;">Duración</div></div>
+      <div style="text-align:center;"><div style="font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;color:var(--agile);">11</div><div style="font-family:'Space Mono',monospace;font-size:.5rem;color:var(--muted);text-transform:uppercase;">Módulos</div></div>
+    </div>
+    <button id="hero-mini-home-btn" style="padding:.4rem .9rem;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:.75rem;cursor:pointer;">↖ Inicio</button>
+  </div>
+  <div id="hero-full">
+
+  <div class="lbl">◆ Guía de Certificación PMI-ACP</div>
+  <h1 class="ptitle" style="font-size:clamp(1.8rem,5vw,3rem);margin-bottom:.5rem;"><span class="grad">PMI-ACP</span> — Domínalo.</h1>
+  <p style="color:var(--muted);font-size:.85rem;line-height:1.6;max-width:560px;margin-bottom:1.2rem;">Certificación <strong style="color:var(--text);">Agile Certified Practitioner</strong> del PMI. Estudia cada módulo desde el menú lateral y márcalo como visto al terminar.</p>
+  <div style="display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:1.4rem;">
+    <div><div style="font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--agile);">120</div><div style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">Preguntas</div></div>
+    <div><div style="font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--agile);">3h</div><div style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">Duración</div></div>
+    <div><div style="font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--agile);">11</div><div style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">Módulos</div></div>
+    <div><div style="font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--agile);">7</div><div style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">Dominios</div></div>
+  </div>
+  <div style="font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.55rem;">Módulos de estudio</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.45rem;max-width:700px;margin-bottom:1.3rem;">
+    <div class="mod-btn" data-nav="m1" id="hmod-m1" style="padding:.6rem .75rem;"><div style="display:flex;align-items:center;gap:.4rem;"><span>📜</span><div><div style="font-family:'Space Mono',monospace;font-size:.48rem;color:var(--agile);">M01</div><div style="font-size:.73rem;font-weight:600;">Manifiesto</div></div></div></div>
+    <div class="mod-btn" data-nav="m2" id="hmod-m2" style="padding:.6rem .75rem;"><div style="display:flex;align-items:center;gap:.4rem;"><span>🔄</span><div><div style="font-family:'Space Mono',monospace;font-size:.48rem;color:var(--agile);">M02</div><div style="font-size:.73rem;font-weight:600;">Scrum</div></div></div></div>
+    <div class="mod-btn" data-nav="m3" id="hmod-m3" style="padding:.6rem .75rem;"><div style="display:flex;align-items:center;gap:.4rem;"><span>🏷️</span><div><div style="font-family:'Space Mono',monospace;font-size:.48rem;color:var(--agile);">M03</div><div style="font-size:.73rem;font-weight:600;">Kanban</div></div></div></div>
+    <div class="mod-btn" data-nav="m4" id="hmod-m4" style="padding:.6rem .75rem;"><div style="display:flex;align-items:center;gap:.4rem;"><span>💻</span><div><div style="font-family:'Space Mono',monospace;font-size:.48rem;color:var(--agile);">M04</div><div style="font-size:.73rem;font-weight:600;">XP</div></div></div></div>
+    <div class="mod-btn" data-nav="m5" id="hmod-m5" style="padding:.6rem .75rem;"><div style="display:flex;align-items:center;gap:.4rem;"><span>♻️</span><div><div style="font-family:'Space Mono',monospace;font-size:.48rem;color:var(--agile);">M05</div><div style="font-size:.73rem;font-weight:600;">Lean</div></div></div></div>
+    <div class="mod-btn" data-nav="m6" id="hmod-m6" style="padding:.6rem .75rem;"><div style="display:flex;align-items:center;gap:.4rem;"><span>🎯</span><div><div style="font-family:'Space Mono',monospace;font-size:.48rem;color:var(--agile);">M06</div><div style="font-size:.73rem;font-weight:600;">Estimación</div></div></div></div>
+    <div class="mod-btn" data-nav="m7" id="hmod-m7" style="padding:.6rem .75rem;"><div style="display:flex;align-items:center;gap:.4rem;"><span>📋</span><div><div style="font-family:'Space Mono',monospace;font-size:.48rem;color:var(--agile);">M07</div><div style="font-size:.73rem;font-weight:600;">Backlog</div></div></div></div>
+    <div class="mod-btn" data-nav="m8" id="hmod-m8" style="padding:.6rem .75rem;"><div style="display:flex;align-items:center;gap:.4rem;"><span>📊</span><div><div style="font-family:'Space Mono',monospace;font-size:.48rem;color:var(--agile);">M08</div><div style="font-size:.73rem;font-weight:600;">Métricas</div></div></div></div>
+    <div class="mod-btn" data-nav="m9" id="hmod-m9" style="padding:.6rem .75rem;"><div style="display:flex;align-items:center;gap:.4rem;"><span>🤝</span><div><div style="font-family:'Space Mono',monospace;font-size:.48rem;color:var(--agile);">M09</div><div style="font-size:.73rem;font-weight:600;">Equipos</div></div></div></div>
+    <div class="mod-btn" data-nav="m10" id="hmod-m10" style="padding:.6rem .75rem;"><div style="display:flex;align-items:center;gap:.4rem;"><span>🏗️</span><div><div style="font-family:'Space Mono',monospace;font-size:.48rem;color:var(--agile);">M10</div><div style="font-size:.73rem;font-weight:600;">Escalado</div></div></div></div>
+    <div class="mod-btn" data-nav="m11" id="hmod-m11" style="padding:.6rem .75rem;"><div style="display:flex;align-items:center;gap:.4rem;"><span>🛡️</span><div><div style="font-family:'Space Mono',monospace;font-size:.48rem;color:var(--agile);">M11</div><div style="font-size:.73rem;font-weight:600;">Riesgos</div></div></div></div>
+  </div>
+  <div style="font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.55rem;">Práctica</div>
+  <div style="display:flex;flex-wrap:wrap;gap:.45rem;">
+    <div class="mod-btn" data-nav="flashcards" style="display:flex;align-items:center;gap:.45rem;padding:.55rem .9rem;"><span>🃏</span><span style="font-size:.76rem;font-weight:600;">Flashcards</span></div>
+    <div class="mod-btn" data-nav="quiz" style="display:flex;align-items:center;gap:.45rem;padding:.55rem .9rem;"><span>🧠</span><span style="font-size:.76rem;font-weight:600;">Quiz</span></div>
+    <div class="mod-btn" data-nav="plan" style="display:flex;align-items:center;gap:.45rem;padding:.55rem .9rem;"><span>📅</span><span style="font-size:.76rem;font-weight:600;">Plan 8 Semanas</span></div>
+    <div class="mod-btn" data-nav="tracker" style="display:flex;align-items:center;gap:.45rem;padding:.55rem .9rem;"><span>✅</span><span style="font-size:.76rem;font-weight:600;">Mi Progreso</span></div>
+  </div>
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+<div class="panel" id="panel-overview">
+  <div class="lbl">// Vista General</div><h1 class="ptitle">Estructura del Examen PMI-ACP</h1>
+  <p class="pdesc">Conoce la distribución del examen para enfocar tu tiempo donde más importa.</p>
+  <div style="display:grid;grid-template-columns:220px 1fr;gap:2rem;align-items:center;margin:1rem 0;">
+    <div style="position:relative;width:220px;height:220px;">
+      <svg style="transform:rotate(-90deg)" width="220" height="220" viewBox="0 0 220 220">
+        <circle cx="110" cy="110" r="80" fill="none" stroke="var(--border)" stroke-width="28"/>
+        <circle cx="110" cy="110" r="80" fill="none" stroke="#8b5cf6" stroke-width="28" stroke-dasharray="150.8 352.6" stroke-dashoffset="0"/>
+        <circle cx="110" cy="110" r="80" fill="none" stroke="#10b981" stroke-width="28" stroke-dasharray="90.5 413" stroke-dashoffset="-150.8"/>
+        <circle cx="110" cy="110" r="80" fill="none" stroke="#06b6d4" stroke-width="28" stroke-dasharray="70.4 432.9" stroke-dashoffset="-241.3"/>
+        <circle cx="110" cy="110" r="80" fill="none" stroke="#7c3aed" stroke-width="28" stroke-dasharray="50.3 453" stroke-dashoffset="-311.7"/>
+        <circle cx="110" cy="110" r="80" fill="none" stroke="#f43f5e" stroke-width="28" stroke-dasharray="50.3 453" stroke-dashoffset="-362"/>
+        <circle cx="110" cy="110" r="80" fill="none" stroke="#00d4ff" stroke-width="28" stroke-dasharray="45.2 458" stroke-dashoffset="-412.3"/>
+        <circle cx="110" cy="110" r="80" fill="none" stroke="#f59e0b" stroke-width="28" stroke-dasharray="45.2 458" stroke-dashoffset="-457.5"/>
+      </svg>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;"><div style="font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;">120</div><div style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);text-transform:uppercase;">preguntas</div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:.5rem;">
+      <div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;"><div style="width:9px;height:9px;border-radius:50%;background:#8b5cf6;flex-shrink:0;"></div><span style="flex:1;">Resolución de Problemas</span><span style="font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);">30%</span></div>
+      <div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;"><div style="width:9px;height:9px;border-radius:50%;background:#10b981;flex-shrink:0;"></div><span style="flex:1;">Entrega Continua</span><span style="font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);">18%</span></div>
+      <div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;"><div style="width:9px;height:9px;border-radius:50%;background:#06b6d4;flex-shrink:0;"></div><span style="flex:1;">Equipos Alto Desempeño</span><span style="font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);">14%</span></div>
+      <div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;"><div style="width:9px;height:9px;border-radius:50%;background:#7c3aed;flex-shrink:0;"></div><span style="flex:1;">Valor Orientado</span><span style="font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);">10%</span></div>
+      <div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;"><div style="width:9px;height:9px;border-radius:50%;background:#f43f5e;flex-shrink:0;"></div><span style="flex:1;">Métricas de Rendimiento</span><span style="font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);">10%</span></div>
+      <div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;"><div style="width:9px;height:9px;border-radius:50%;background:#00d4ff;flex-shrink:0;"></div><span style="flex:1;">Mentalidad Ágil</span><span style="font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);">9%</span></div>
+      <div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;"><div style="width:9px;height:9px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></div><span style="flex:1;">Involucramiento del Cliente</span><span style="font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);">9%</span></div>
+    </div>
+  </div>
+  <hr class="dv"><div class="sh">Pesos por Dominio</div>
+  <div class="dbr"><div class="dbr-lbl">Resolución de Problemas</div><div class="dbr-track"><div class="dbr-fill" style="background:#8b5cf6" data-w="30"></div></div><div class="dbr-pct">30%</div></div>
+  <div class="dbr"><div class="dbr-lbl">Entrega Continua</div><div class="dbr-track"><div class="dbr-fill" style="background:#10b981" data-w="18"></div></div><div class="dbr-pct">18%</div></div>
+  <div class="dbr"><div class="dbr-lbl">Equipos de Alto Desempeño</div><div class="dbr-track"><div class="dbr-fill" style="background:#06b6d4" data-w="14"></div></div><div class="dbr-pct">14%</div></div>
+  <div class="dbr"><div class="dbr-lbl">Valor Orientado</div><div class="dbr-track"><div class="dbr-fill" style="background:#7c3aed" data-w="10"></div></div><div class="dbr-pct">10%</div></div>
+  <div class="dbr"><div class="dbr-lbl">Métricas de Rendimiento</div><div class="dbr-track"><div class="dbr-fill" style="background:#f43f5e" data-w="10"></div></div><div class="dbr-pct">10%</div></div>
+  <div class="dbr"><div class="dbr-lbl">Mentalidad Ágil</div><div class="dbr-track"><div class="dbr-fill" style="background:#00d4ff" data-w="9"></div></div><div class="dbr-pct">9%</div></div>
+  <div class="dbr"><div class="dbr-lbl">Involucramiento del Cliente</div><div class="dbr-track"><div class="dbr-fill" style="background:#f59e0b" data-w="9"></div></div><div class="dbr-pct">9%</div></div>
+  <hr class="dv"><div class="sh">Requisitos de Elegibilidad</div>
+  <div class="g2">
+    <div class="card card-top" style="--card-color:var(--c0)"><div class="ct">Educación</div><ul class="ul"><li>Secundaria o superior</li><li>21 horas de educación en prácticas ágiles</li></ul></div>
+    <div class="card card-top" style="--card-color:var(--c3)"><div class="ct">Experiencia</div><ul class="ul"><li>12 meses en proyectos generales</li><li>8 meses en equipos ágiles (últimos 5 años)</li></ul></div>
+  </div>
+  <div class="hi hi-warn" style="margin-top:1rem;"><div class="hi-title">⚠️ Mantenimiento</div><p>30 PDUs de educación ágil cada 3 años para mantener la certificación.</p></div>
+  <hr class="dv"><div class="sh">Frameworks Cubiertos</div>
+  <table class="tbl"><thead><tr><th>Framework</th><th>Enfoque</th><th>Peso</th></tr></thead><tbody>
+    <tr><td>Scrum</td><td>Gestión iterativa, sprints, roles definidos</td><td>Alto</td></tr>
+    <tr><td>Kanban</td><td>Flujo continuo, WIP limits, métricas</td><td>Medio-Alto</td></tr>
+    <tr><td>XP</td><td>Prácticas técnicas, TDD, pair programming</td><td>Medio</td></tr>
+    <tr><td>Lean</td><td>Eliminación de desperdicios, flujo de valor</td><td>Medio</td></tr>
+    <tr><td>SAFe / LeSS / Nexus</td><td>Escalado ágil a nivel empresa</td><td>Bajo-Medio</td></tr>
+  </tbody></table>
+</div>
+
+<!-- M1 -->
+<div class="panel" id="panel-m1">
+  <div class="lbl">// Módulo 01</div><h1 class="ptitle">📜 Manifiesto Ágil</h1>
+  <p class="pdesc">La base filosófica de todo Agile. Los 4 valores y 12 principios son preguntados directamente en el examen.</p>
+  <div class="sh">Los 4 Valores</div>
+  <div class="hi hi-info"><div class="hi-title">💡 Clave del examen</div><p>El Manifiesto NO dice que el lado derecho no importa — dice que el izquierdo importa MÁS. Esta distinción aparece frecuentemente en preguntas situacionales.</p></div>
+  <div class="g2" style="margin:1rem 0;">
+    <div class="val-card"><div class="val-main">Individuos e interacciones</div><div class="val-over">sobre procesos y herramientas</div></div>
+    <div class="val-card"><div class="val-main">Software funcionando</div><div class="val-over">sobre documentación exhaustiva</div></div>
+    <div class="val-card"><div class="val-main">Colaboración con el cliente</div><div class="val-over">sobre negociación contractual</div></div>
+    <div class="val-card"><div class="val-main">Responder al cambio</div><div class="val-over">sobre seguir un plan</div></div>
+  </div>
+  <hr class="dv"><div class="sh">Los 12 Principios</div>
+  <div class="pctr">
+    <div class="pi"><p>Satisfacer al cliente mediante la entrega temprana y continua de software valioso.</p></div>
+    <div class="pi"><p>Aceptar que los requisitos cambien, incluso en etapas tardías del desarrollo.</p></div>
+    <div class="pi"><p>Entregar software funcional con frecuencia, preferiblemente en semanas que en meses.</p></div>
+    <div class="pi"><p>Los responsables del negocio y los desarrolladores deben trabajar juntos diariamente.</p></div>
+    <div class="pi"><p>Construir proyectos alrededor de individuos motivados. Darles el entorno y apoyo que necesitan.</p></div>
+    <div class="pi"><p>La conversación cara a cara es el método más eficiente de transmitir información al equipo.</p></div>
+    <div class="pi"><p>El software funcionando es la medida principal de progreso.</p></div>
+    <div class="pi"><p>Los procesos ágiles promueven el desarrollo sostenible a un ritmo indefinidamente mantenible.</p></div>
+    <div class="pi"><p>La atención continua a la excelencia técnica y al buen diseño mejora la agilidad.</p></div>
+    <div class="pi"><p>La simplicidad — maximizar la cantidad de trabajo no realizado — es esencial.</p></div>
+    <div class="pi"><p>Las mejores arquitecturas y diseños emergen de equipos auto-organizados.</p></div>
+    <div class="pi"><p>El equipo reflexiona periódicamente sobre cómo ser más efectivo y ajusta su comportamiento.</p></div>
+  </div>
+  <hr class="dv"><div class="sh">Ágil vs. Tradicional</div>
+  <table class="tbl"><thead><tr><th>Dimensión</th><th>Tradicional</th><th>Ágil</th></tr></thead><tbody>
+    <tr><td>Planificación</td><td>Detallada al inicio</td><td>Progresiva y adaptativa</td></tr>
+    <tr><td>Cambios</td><td>Se controlan y evitan</td><td>Se abrazan como oportunidad</td></tr>
+    <tr><td>Entrega</td><td>Al final del proyecto</td><td>Iterativa, valor temprano</td></tr>
+    <tr><td>Equipos</td><td>Funcionales, silos</td><td>Cross-funcionales, auto-organizados</td></tr>
+    <tr><td>Cliente</td><td>Al inicio y al final</td><td>Continuamente involucrado</td></tr>
+    <tr><td>Documentación</td><td>Extensa y formal</td><td>Suficiente, justo lo necesario</td></tr>
+  </tbody></table>
+
+  <div id="mark-bar-m1" style="margin-top:2rem;padding:1rem 1.2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;">
+    <div>
+      <div style="font-size:.78rem;font-weight:600;margin-bottom:.2rem;">¿Terminaste este módulo?</div>
+      <div style="font-size:.73rem;color:var(--muted);">Márcalo como visto para actualizar tu progreso.</div>
+    </div>
+    <button id="markbtn-m1" class="btn" style="font-size:.78rem;padding:.45rem 1.1rem;" data-markid="m1">✓ Marcar como visto</button>
+  </div>
+</div>
+
+<!-- M2 -->
+<div class="panel" id="panel-m2">
+  <div class="lbl">// Módulo 02</div><h1 class="ptitle">🔄 Scrum</h1>
+  <p class="pdesc">El framework ágil más popular. Domina sus 3 roles, 5 eventos y 3 artefactos al pie de la letra.</p>
+  <div class="g3">
+    <div class="card card-top" style="--card-color:var(--c1)"><div class="ct">🎭 Roles</div><ul class="ul"><li><strong>Product Owner</strong> — dueño del backlog, maximiza el valor</li><li><strong>Scrum Master</strong> — servant leader, elimina impedimentos</li><li><strong>Dev Team</strong> — cross-funcional, auto-organizado (3-9 personas)</li></ul></div>
+    <div class="card card-top" style="--card-color:var(--c3)"><div class="ct">📅 Eventos</div><ul class="ul"><li><strong>Sprint</strong> — 1-4 semanas</li><li><strong>Sprint Planning</strong> — ¿Qué y cómo?</li><li><strong>Daily Scrum</strong> — 15 min</li><li><strong>Sprint Review</strong> — demostrar incremento</li><li><strong>Retrospectiva</strong> — mejorar el proceso</li></ul></div>
+    <div class="card card-top" style="--card-color:var(--c2)"><div class="ct">📦 Artefactos</div><ul class="ul"><li><strong>Product Backlog</strong> — lista priorizada</li><li><strong>Sprint Backlog</strong> — compromisos del sprint</li><li><strong>Incremento</strong> — software entregable</li></ul></div>
+  </div>
+  <hr class="dv"><div class="sh">3 Pilares Empíricos</div>
+  <div class="g3">
+    <div class="card"><h4 style="font-size:.85rem;font-weight:600;margin-bottom:.4rem;">🔍 Transparencia</h4><p style="font-size:.78rem;color:var(--muted);line-height:1.6;">Todo el trabajo y su estado deben ser visibles para los responsables del resultado.</p></div>
+    <div class="card"><h4 style="font-size:.85rem;font-weight:600;margin-bottom:.4rem;">🔎 Inspección</h4><p style="font-size:.78rem;color:var(--muted);line-height:1.6;">Los artefactos y el progreso deben inspeccionarse frecuentemente para detectar desviaciones.</p></div>
+    <div class="card"><h4 style="font-size:.85rem;font-weight:600;margin-bottom:.4rem;">🔧 Adaptación</h4><p style="font-size:.78rem;color:var(--muted);line-height:1.6;">Si hay desviaciones significativas, el proceso o el producto debe ajustarse cuanto antes.</p></div>
+  </div>
+  <hr class="dv"><div class="sh">5 Valores de Scrum</div>
+  <div style="display:flex;gap:.7rem;flex-wrap:wrap;">
+    <div class="card" style="text-align:center;flex:1;min-width:85px;"><div style="font-size:1.3rem;">💪</div><div style="font-size:.78rem;font-weight:600;margin-top:.3rem;">Compromiso</div></div>
+    <div class="card" style="text-align:center;flex:1;min-width:85px;"><div style="font-size:1.3rem;">🎯</div><div style="font-size:.78rem;font-weight:600;margin-top:.3rem;">Enfoque</div></div>
+    <div class="card" style="text-align:center;flex:1;min-width:85px;"><div style="font-size:1.3rem;">🔓</div><div style="font-size:.78rem;font-weight:600;margin-top:.3rem;">Apertura</div></div>
+    <div class="card" style="text-align:center;flex:1;min-width:85px;"><div style="font-size:1.3rem;">🤝</div><div style="font-size:.78rem;font-weight:600;margin-top:.3rem;">Respeto</div></div>
+    <div class="card" style="text-align:center;flex:1;min-width:85px;"><div style="font-size:1.3rem;">🦁</div><div style="font-size:.78rem;font-weight:600;margin-top:.3rem;">Coraje</div></div>
+  </div>
+  <hr class="dv"><div class="sh">DoD vs. DoR</div>
+  <div class="g2">
+    <div class="card card-top" style="--card-color:var(--c3)"><div class="ct">✅ Definition of Done</div><ul class="ul"><li>Código completo y revisado</li><li>Pruebas unitarias e integración pasadas</li><li>Documentación actualizada</li><li>Sin deuda técnica nueva</li><li>Aprobado por el Product Owner</li></ul></div>
+    <div class="card card-top" style="--card-color:var(--c0)"><div class="ct">🚦 Definition of Ready</div><ul class="ul"><li>Historia de usuario clara</li><li>Criterios de aceptación definidos</li><li>Story points estimados</li><li>Dependencias identificadas</li><li>Cabe en un sprint</li></ul></div>
+  </div>
+  <div class="hi hi-warn" style="margin-top:1rem;"><div class="hi-title">⚠️ Trampa del examen</div><p>El Sprint NO puede extenderse. El Sprint Goal no cambia. El Scrum Master NO es un gerente de proyecto. "Extender el sprint" es casi siempre la respuesta incorrecta.</p></div>
+
+  <div id="mark-bar-m2" style="margin-top:2rem;padding:1rem 1.2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;">
+    <div>
+      <div style="font-size:.78rem;font-weight:600;margin-bottom:.2rem;">¿Terminaste este módulo?</div>
+      <div style="font-size:.73rem;color:var(--muted);">Márcalo como visto para actualizar tu progreso.</div>
+    </div>
+    <button id="markbtn-m2" class="btn" style="font-size:.78rem;padding:.45rem 1.1rem;" data-markid="m2">✓ Marcar como visto</button>
+  </div>
+</div>
+
+<!-- M3 -->
+<div class="panel" id="panel-m3">
+  <div class="lbl">// Módulo 03</div><h1 class="ptitle">🏷️ Kanban</h1>
+  <p class="pdesc">Sistema de gestión visual del flujo. No hay sprints — el trabajo fluye continuamente limitando el WIP.</p>
+  <div class="g2">
+    <div class="card card-top" style="--card-color:var(--c2)"><div class="ct">6 Prácticas Core</div><ul class="ul"><li>Visualizar el flujo de trabajo</li><li>Limitar el WIP</li><li>Gestionar y mejorar el flujo</li><li>Hacer las políticas explícitas</li><li>Implementar ciclos de feedback</li><li>Mejorar colaborativamente</li></ul></div>
+    <div class="card card-top" style="--card-color:var(--c0)"><div class="ct">📊 Métricas Clave</div><ul class="ul"><li><strong>Lead Time</strong> — solicitud a entrega</li><li><strong>Cycle Time</strong> — inicio activo a entrega</li><li><strong>Throughput</strong> — ítems/periodo</li><li><strong>WIP</strong> — trabajo en progreso</li><li><strong>CFD</strong> — Cumulative Flow Diagram</li></ul></div>
+  </div>
+  <hr class="dv"><div class="sh">Ley de Little</div>
+  <div class="formula">WIP = Throughput × Lead Time<small>Si el throughput es constante, reducir el WIP reduce el Lead Time directamente.</small></div>
+  <div class="hi hi-ok"><div class="hi-title">✅ Regla práctica</div><p>La solución no es trabajar más rápido, sino limitar el trabajo simultáneo. Menos WIP = menor Lead Time = entregas más predecibles.</p></div>
+  <hr class="dv"><div class="sh">Lead Time vs. Cycle Time</div>
+  <div class="card" style="padding:1.2rem;margin-bottom:1rem;">
+    <div style="display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;">
+      <div style="text-align:center;"><div style="background:rgba(0,212,255,.15);border:1px solid var(--agile);border-radius:8px;padding:.35rem .7rem;color:var(--agile);font-family:'Space Mono',monospace;font-size:.62rem;font-weight:600;">Solicitud</div><div style="font-size:.6rem;color:var(--muted);margin-top:.2rem;">Inicio Lead Time</div></div>
+      <div style="flex:1;height:2px;background:linear-gradient(90deg,var(--agile),var(--c1));min-width:20px;"></div>
+      <div style="text-align:center;"><div style="background:rgba(124,58,237,.15);border:1px solid var(--c1);border-radius:8px;padding:.35rem .7rem;color:#a78bfa;font-family:'Space Mono',monospace;font-size:.62rem;font-weight:600;">Trabajo activo</div><div style="font-size:.6rem;color:var(--muted);margin-top:.2rem;">Inicio Cycle Time</div></div>
+      <div style="flex:1;height:2px;background:var(--c1);min-width:20px;"></div>
+      <div style="text-align:center;"><div style="background:rgba(16,185,129,.15);border:1px solid var(--c3);border-radius:8px;padding:.35rem .7rem;color:var(--c3);font-family:'Space Mono',monospace;font-size:.62rem;font-weight:600;">Entrega</div><div style="font-size:.6rem;color:var(--muted);margin-top:.2rem;">Fin de ambos</div></div>
+    </div>
+    <p style="font-size:.73rem;color:var(--muted);margin-top:.9rem;">Lead Time ≥ Cycle Time siempre. La diferencia es el tiempo de espera antes de que el equipo comience a trabajar.</p>
+  </div>
+  <hr class="dv"><div class="sh">Cumulative Flow Diagram (CFD)</div>
+  <div class="g2">
+    <div class="card"><h4 style="font-size:.85rem;font-weight:600;margin-bottom:.4rem;">Qué muestra</h4><p style="font-size:.78rem;color:var(--muted);line-height:1.6;">Bandas apiladas con ítems en cada columna del tablero en el tiempo. Brecha horizontal = lead time. Brecha vertical = WIP.</p></div>
+    <div class="card"><h4 style="font-size:.85rem;font-weight:600;margin-bottom:.4rem;">Señales de problema</h4><ul class="ul"><li>Bandas que se ensanchan → cuello de botella</li><li>Banda plana → bloqueo total</li><li>Pendiente decreciente → throughput cayendo</li></ul></div>
+  </div>
+
+  <div id="mark-bar-m3" style="margin-top:2rem;padding:1rem 1.2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;">
+    <div>
+      <div style="font-size:.78rem;font-weight:600;margin-bottom:.2rem;">¿Terminaste este módulo?</div>
+      <div style="font-size:.73rem;color:var(--muted);">Márcalo como visto para actualizar tu progreso.</div>
+    </div>
+    <button id="markbtn-m3" class="btn" style="font-size:.78rem;padding:.45rem 1.1rem;" data-markid="m3">✓ Marcar como visto</button>
+  </div>
+</div>
+
+<!-- M4 -->
+<div class="panel" id="panel-m4">
+  <div class="lbl">// Módulo 04</div><h1 class="ptitle">💻 Extreme Programming (XP)</h1>
+  <p class="pdesc">Framework de excelencia técnica. Sus prácticas reducen el costo del cambio y aumentan la calidad del código.</p>
+  <div class="g2">
+    <div class="card card-top" style="--card-color:var(--c3)"><div class="ct">❤️ 5 Valores XP</div><ul class="ul"><li><strong>Comunicación</strong> — hablar cara a cara</li><li><strong>Simpleza</strong> — solo lo necesario (YAGNI)</li><li><strong>Retroalimentación</strong> — ciclos cortos</li><li><strong>Coraje</strong> — refactorizar, decir la verdad</li><li><strong>Respeto</strong> — entre todos los miembros</li></ul></div>
+    <div class="card card-top" style="--card-color:var(--c0)"><div class="ct">🎭 Roles XP</div><ul class="ul"><li><strong>Customer</strong> — escribe user stories y pruebas</li><li><strong>Coach</strong> — facilita el proceso XP</li><li><strong>Programmer</strong> — estima, desarrolla, testea</li><li><strong>Tester</strong> — ayuda con acceptance tests</li><li><strong>Tracker</strong> — monitorea el progreso</li></ul></div>
+  </div>
+  <hr class="dv"><div class="sh">Prácticas Técnicas XP</div>
+  <div class="acc open"><div class="acc-h">🧪 Test-Driven Development (TDD)<span class="acc-arrow">▼</span></div><div class="acc-body">Ciclo: <strong>RED</strong> → escribe la prueba que falla. <strong>GREEN</strong> → código mínimo para pasarla. <strong>REFACTOR</strong> → mejora sin romper pruebas. Resultado: cobertura alta y diseño emergente.</div></div>
+  <div class="acc"><div class="acc-h">👥 Pair Programming<span class="acc-arrow">▼</span></div><div class="acc-body">Dos desarrolladores en una estación: el <strong>Driver</strong> escribe código, el <strong>Navigator</strong> revisa en tiempo real. Se rotan roles. Beneficios: menos defectos, transferencia de conocimiento, revisión continua.</div></div>
+  <div class="acc"><div class="acc-h">🔗 Continuous Integration (CI)<span class="acc-arrow">▼</span></div><div class="acc-body">Integrar el código al repositorio compartido varias veces al día. Cada integración se verifica con pruebas automatizadas. Elimina el "integration hell" al final del proyecto.</div></div>
+  <div class="acc"><div class="acc-h">🔄 Refactoring<span class="acc-arrow">▼</span></div><div class="acc-body">Mejorar la estructura interna del código sin cambiar su comportamiento externo. Se realiza continuamente para evitar deuda técnica. Requiere cobertura de pruebas para hacerlo de forma segura.</div></div>
+  <div class="acc"><div class="acc-h">🏠 Collective Code Ownership<span class="acc-arrow">▼</span></div><div class="acc-body">Cualquier miembro puede modificar cualquier parte del código en cualquier momento. Elimina silos de conocimiento. Requiere estándares de codificación compartidos.</div></div>
+  <div class="acc"><div class="acc-h">📐 Simple Design — YAGNI + DRY + KISS<span class="acc-arrow">▼</span></div><div class="acc-body"><strong>YAGNI</strong>: You Aren't Gonna Need It — no implementar hasta que sea necesario.<br><strong>DRY</strong>: Don't Repeat Yourself — una única representación de cada pieza de conocimiento.<br><strong>KISS</strong>: Keep It Simple, Stupid.</div></div>
+  <div class="acc"><div class="acc-h">🔢 Small Releases<span class="acc-arrow">▼</span></div><div class="acc-body">Releases frecuentes y pequeñas que entregan valor real. Permite al cliente dar feedback temprano y ajustar la dirección del producto.</div></div>
+  <div class="acc"><div class="acc-h">🏃 Sustainable Pace — 40-Hour Week<span class="acc-arrow">▼</span></div><div class="acc-body">El equipo trabaja a un ritmo mantenible indefinidamente (~40 horas/semana). Las horas extra reducen la calidad y productividad a largo plazo.</div></div>
+
+  <div id="mark-bar-m4" style="margin-top:2rem;padding:1rem 1.2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;">
+    <div>
+      <div style="font-size:.78rem;font-weight:600;margin-bottom:.2rem;">¿Terminaste este módulo?</div>
+      <div style="font-size:.73rem;color:var(--muted);">Márcalo como visto para actualizar tu progreso.</div>
+    </div>
+    <button id="markbtn-m4" class="btn" style="font-size:.78rem;padding:.45rem 1.1rem;" data-markid="m4">✓ Marcar como visto</button>
+  </div>
+</div>
+
+<!-- M5 -->
+<div class="panel" id="panel-m5">
+  <div class="lbl">// Módulo 05</div><h1 class="ptitle">♻️ Lean Agile</h1>
+  <p class="pdesc">Originado en Toyota. Lean elimina desperdicio y maximiza el flujo de valor — inspiró muchos principios ágiles.</p>
+  <div class="sh">Los 7 Desperdicios (Muda)</div>
+  <div class="ga" style="margin:1rem 0;">
+    <div class="card" style="border-left:3px solid var(--c4);"><div style="font-size:1.3rem;">🏭</div><div style="font-size:.85rem;font-weight:600;margin:.3rem 0;">Sobreproducción</div><div style="font-size:.75rem;color:var(--muted);">Construir features que nadie pidió.</div></div>
+    <div class="card" style="border-left:3px solid var(--c4);"><div style="font-size:1.3rem;">📦</div><div style="font-size:.85rem;font-weight:600;margin:.3rem 0;">Inventario</div><div style="font-size:.75rem;color:var(--muted);">WIP excesivo, backlog enorme sin priorizar.</div></div>
+    <div class="card" style="border-left:3px solid var(--c4);"><div style="font-size:1.3rem;">🚶</div><div style="font-size:.85rem;font-weight:600;margin:.3rem 0;">Movimiento</div><div style="font-size:.75rem;color:var(--muted);">Multitasking, cambio de tarea constante.</div></div>
+    <div class="card" style="border-left:3px solid var(--c4);"><div style="font-size:1.3rem;">⏳</div><div style="font-size:.85rem;font-weight:600;margin:.3rem 0;">Espera</div><div style="font-size:.75rem;color:var(--muted);">Bloqueos, dependencias, aprobaciones lentas.</div></div>
+    <div class="card" style="border-left:3px solid var(--c4);"><div style="font-size:1.3rem;">🐛</div><div style="font-size:.85rem;font-weight:600;margin:.3rem 0;">Defectos</div><div style="font-size:.75rem;color:var(--muted);">Bugs, retrabajo, falta de calidad integrada.</div></div>
+    <div class="card" style="border-left:3px solid var(--c4);"><div style="font-size:1.3rem;">⚙️</div><div style="font-size:.85rem;font-weight:600;margin:.3rem 0;">Sobreprocesamiento</div><div style="font-size:.75rem;color:var(--muted);">Documentación excesiva, procesos innecesarios.</div></div>
+    <div class="card" style="border-left:3px solid var(--c4);"><div style="font-size:1.3rem;">🚛</div><div style="font-size:.85rem;font-weight:600;margin:.3rem 0;">Transporte</div><div style="font-size:.75rem;color:var(--muted);">Pasar información entre silos, handoffs.</div></div>
+  </div>
+  <hr class="dv"><div class="sh">7 Principios Lean (Poppendieck)</div>
+  <table class="tbl"><thead><tr><th>#</th><th>Principio</th><th>Aplicación Ágil</th></tr></thead><tbody>
+    <tr><td style="color:var(--agile);font-family:'Space Mono',monospace;">1</td><td>Eliminar desperdicios</td><td>Reducir WIP, eliminar features innecesarias</td></tr>
+    <tr><td style="color:var(--agile);font-family:'Space Mono',monospace;">2</td><td>Amplificar el aprendizaje</td><td>Iteraciones cortas, retrospectivas</td></tr>
+    <tr><td style="color:var(--agile);font-family:'Space Mono',monospace;">3</td><td>Decidir lo más tarde posible</td><td>Last Responsible Moment</td></tr>
+    <tr><td style="color:var(--agile);font-family:'Space Mono',monospace;">4</td><td>Entregar tan rápido como sea posible</td><td>Sprints, CI/CD, releases frecuentes</td></tr>
+    <tr><td style="color:var(--agile);font-family:'Space Mono',monospace;">5</td><td>Empoderar al equipo</td><td>Auto-organización, servant leadership</td></tr>
+    <tr><td style="color:var(--agile);font-family:'Space Mono',monospace;">6</td><td>Construir calidad integrada</td><td>TDD, pair programming, DoD riguroso</td></tr>
+    <tr><td style="color:var(--agile);font-family:'Space Mono',monospace;">7</td><td>Ver el todo</td><td>Pensamiento sistémico, evitar optimizaciones locales</td></tr>
+  </tbody></table>
+  <hr class="dv"><div class="sh">VSM & MVP</div>
+  <div class="g2">
+    <div class="card"><h4 style="font-size:.85rem;font-weight:600;margin-bottom:.4rem;">Value Stream Mapping</h4><p style="font-size:.78rem;color:var(--muted);line-height:1.6;">Mapea todos los pasos del proceso para identificar tiempo de valor agregado vs. espera. Pasos: Current State → Identificar desperdicios → Future State → Plan de mejora.</p></div>
+    <div class="card"><h4 style="font-size:.85rem;font-weight:600;margin-bottom:.4rem;">MVP — Minimum Viable Product</h4><p style="font-size:.78rem;color:var(--muted);line-height:1.6;">La versión más pequeña de un producto que permite aprender lo máximo con el mínimo esfuerzo. No es un producto incompleto — es un experimento de aprendizaje validado.</p></div>
+  </div>
+
+  <div id="mark-bar-m5" style="margin-top:2rem;padding:1rem 1.2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;">
+    <div>
+      <div style="font-size:.78rem;font-weight:600;margin-bottom:.2rem;">¿Terminaste este módulo?</div>
+      <div style="font-size:.73rem;color:var(--muted);">Márcalo como visto para actualizar tu progreso.</div>
+    </div>
+    <button id="markbtn-m5" class="btn" style="font-size:.78rem;padding:.45rem 1.1rem;" data-markid="m5">✓ Marcar como visto</button>
+  </div>
+</div>
+
+<!-- M6 -->
+<div class="panel" id="panel-m6">
+  <div class="lbl">// Módulo 06</div><h1 class="ptitle">🎯 Estimación & Planning</h1>
+  <p class="pdesc">Cómo los equipos ágiles estiman sin certeza total — y por qué ese enfoque funciona mejor que la falsa precisión.</p>
+  <div class="g2">
+    <div class="card card-top" style="--card-color:var(--c3)"><div class="ct">✅ Story Points</div><ul class="ul"><li>Relativos — comparan tamaño entre historias</li><li>Abstractos — no son horas ni días</li><li>Incluyen complejidad, riesgo e incertidumbre</li><li>El equipo los asigna en conjunto</li><li>La velocity calibra automáticamente</li></ul></div>
+    <div class="card card-top" style="--card-color:var(--c4)"><div class="ct">⚠️ Estimación en Horas</div><ul class="ul"><li>Crea falsa precisión</li><li>No captura la complejidad</li><li>Varía entre personas</li><li>Genera presión por hora, no por valor</li><li>Aceptable para tareas técnicas muy conocidas</li></ul></div>
+  </div>
+  <hr class="dv"><div class="sh">Técnicas de Estimación</div>
+  <div class="acc open"><div class="acc-h">🃏 Planning Poker<span class="acc-arrow">▼</span></div><div class="acc-body">El equipo estima con cartas Fibonacci (0,1,2,3,5,8,13,21,?,∞). Todos revelan al mismo tiempo para evitar anclaje. Cuando hay discrepancias, los extremos explican y se re-estima. Fomenta la conversación, no solo el número.</div></div>
+  <div class="acc"><div class="acc-h">👕 T-Shirt Sizing<span class="acc-arrow">▼</span></div><div class="acc-body">Estimación rápida con tallas: XS, S, M, L, XL, XXL. Ideal para épicas y features de alto nivel. Mapeo típico: S=2, M=5, L=8, XL=13 story points.</div></div>
+  <div class="acc"><div class="acc-h">🐟 Affinity Estimation<span class="acc-arrow">▼</span></div><div class="acc-body">El equipo agrupa visualmente historias por tamaño relativo en silencio. Rápido para estimar grandes backlogs. Se organizan en clusters y se asigna un número a cada cluster.</div></div>
+  <div class="acc"><div class="acc-h">📊 Wideband Delphi<span class="acc-arrow">▼</span></div><div class="acc-body">Expertos estiman de forma anónima, se consolidan, se discuten discrepancias y se repite hasta convergencia. Reduce el sesgo del primer estimador.</div></div>
+  <hr class="dv"><div class="sh">Velocity y Capacidad</div>
+  <div class="formula">Velocity = Suma de Story Points completados en un sprint<small>Se promedia sobre los últimos 3 sprints para mayor precisión.</small></div>
+  <div class="formula">N° sprints necesarios = Total Story Points / Velocity promedio<small>Siempre incluye rangos de fechas, nunca fechas exactas.</small></div>
+  <div class="hi hi-warn"><div class="hi-title">⚠️ Trampa común</div><p>La velocity NO es una métrica de productividad para comparar equipos. Comparar velocidades entre equipos genera inflación de estimaciones — cada equipo calibra sus propios story points.</p></div>
+  <hr class="dv"><div class="sh">Cone of Uncertainty</div>
+  <div class="card"><p style="font-size:.82rem;color:var(--muted);line-height:1.6;">Al inicio del proyecto la incertidumbre es <strong style="color:var(--agile);">±400%</strong>. Disminuye conforme avanza el proyecto. Justifica NO planificar todo con detalle al inicio — las decisiones tempranas son las más costosas de cambiar.</p></div>
+
+  <div id="mark-bar-m6" style="margin-top:2rem;padding:1rem 1.2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;">
+    <div>
+      <div style="font-size:.78rem;font-weight:600;margin-bottom:.2rem;">¿Terminaste este módulo?</div>
+      <div style="font-size:.73rem;color:var(--muted);">Márcalo como visto para actualizar tu progreso.</div>
+    </div>
+    <button id="markbtn-m6" class="btn" style="font-size:.78rem;padding:.45rem 1.1rem;" data-markid="m6">✓ Marcar como visto</button>
+  </div>
+</div>
+
+<!-- M7 -->
+<div class="panel" id="panel-m7">
+  <div class="lbl">// Módulo 07</div><h1 class="ptitle">📋 Backlog & Priorización</h1>
+  <p class="pdesc">Gestionar qué se hace primero es el trabajo central del Product Owner y un tema crítico del examen.</p>
+  <div class="sh">User Stories — Formato INVEST</div>
+  <div class="g2">
+    <div class="card">
+      <h4 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem;">Formato estándar</h4>
+      <div style="background:var(--card2);border-radius:8px;padding:.8rem;margin:.5rem 0;font-family:'Space Mono',monospace;font-size:.75rem;color:var(--agile);">Como [rol],<br>quiero [función],<br>para que [beneficio].</div>
+      <p style="font-size:.75rem;color:var(--muted);line-height:1.5;">Los criterios de aceptación son condiciones medibles que la historia debe cumplir.</p>
+    </div>
+    <div class="card card-top" style="--card-color:var(--c0)"><div class="ct">INVEST</div><ul class="ul"><li><strong>I</strong>ndependiente</li><li><strong>N</strong>egociable</li><li><strong>V</strong>aliosa</li><li><strong>E</strong>stimable</li><li><strong>S</strong>mall — cabe en un sprint</li><li><strong>T</strong>esteable — tiene criterios de aceptación</li></ul></div>
+  </div>
+  <hr class="dv"><div class="sh">Épicas → Features → Historias → Tareas</div>
+  <div class="card" style="padding:1.2rem;margin-bottom:1rem;">
+    <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
+      <div style="text-align:center;"><div style="background:rgba(124,58,237,.15);border:1px solid var(--c1);border-radius:8px;padding:.4rem .9rem;color:#a78bfa;font-family:'Space Mono',monospace;font-size:.7rem;font-weight:600;">ÉPICA</div><div style="font-size:.62rem;color:var(--muted);margin-top:.2rem;">Meses</div></div>
+      <div style="color:var(--muted);">→</div>
+      <div style="text-align:center;"><div style="background:rgba(0,212,255,.1);border:1px solid var(--agile);border-radius:8px;padding:.4rem .9rem;color:var(--agile);font-family:'Space Mono',monospace;font-size:.7rem;font-weight:600;">FEATURE</div><div style="font-size:.62rem;color:var(--muted);margin-top:.2rem;">Semanas</div></div>
+      <div style="color:var(--muted);">→</div>
+      <div style="text-align:center;"><div style="background:rgba(16,185,129,.1);border:1px solid var(--c3);border-radius:8px;padding:.4rem .9rem;color:var(--c3);font-family:'Space Mono',monospace;font-size:.7rem;font-weight:600;">USER STORY</div><div style="font-size:.62rem;color:var(--muted);margin-top:.2rem;">1 Sprint</div></div>
+      <div style="color:var(--muted);">→</div>
+      <div style="text-align:center;"><div style="background:rgba(245,158,11,.1);border:1px solid var(--c2);border-radius:8px;padding:.4rem .9rem;color:var(--c2);font-family:'Space Mono',monospace;font-size:.7rem;font-weight:600;">TAREA</div><div style="font-size:.62rem;color:var(--muted);margin-top:.2rem;">Horas</div></div>
+    </div>
+  </div>
+  <hr class="dv"><div class="sh">Técnicas de Priorización</div>
+  <div class="acc open"><div class="acc-h">🎯 MoSCoW<span class="acc-arrow">▼</span></div><div class="acc-body"><strong>Must have</strong> — imprescindibles para el release.<br><strong>Should have</strong> — importantes pero no críticos.<br><strong>Could have</strong> — deseables si el tiempo lo permite.<br><strong>Won't have</strong> — fuera del alcance actual; candidatos para future releases.</div></div>
+  <div class="acc"><div class="acc-h">🔢 WSJF — Weighted Shortest Job First<span class="acc-arrow">▼</span></div><div class="acc-body">WSJF = Costo del Retraso / Tamaño del Job.<br>Costo del Retraso = Valor de negocio + Urgencia temporal + Reducción de riesgo/oportunidad.<br>Se ordena de mayor a menor WSJF. Usado principalmente en SAFe.</div></div>
+  <div class="acc"><div class="acc-h">😊 Modelo Kano<span class="acc-arrow">▼</span></div><div class="acc-body"><strong>Must-be</strong> — si falta, el cliente queda insatisfecho.<br><strong>One-dimensional</strong> — más de esto = más satisfacción lineal.<br><strong>Attractive</strong> — sorprenden y generan deleite.<br><strong>Indifferent</strong> — al cliente no le importa.<br><strong>Reverse</strong> — si está presente, el cliente queda insatisfecho.</div></div>
+  <div class="acc"><div class="acc-h">💰 Valor de Negocio Relativo<span class="acc-arrow">▼</span></div><div class="acc-body">PO y equipo de negocio asignan puntos de valor relativos. ROI = Valor / Esfuerzo. Se prioriza lo de mayor ratio. Compatible con Planning Poker de valor.</div></div>
+  <hr class="dv"><div class="sh">Refinamiento del Backlog</div>
+  <div class="card"><p style="font-size:.82rem;color:var(--muted);line-height:1.6;"><strong style="color:var(--text);">Backlog Refinement</strong> — actividad continua donde el equipo y el PO revisan, detallan y reestiman ítems. En Scrum ocupa el <strong style="color:var(--agile);">~10% del tiempo del sprint</strong>. Resultado: backlog listo para el próximo sprint planning.</p></div>
+
+  <div id="mark-bar-m7" style="margin-top:2rem;padding:1rem 1.2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;">
+    <div>
+      <div style="font-size:.78rem;font-weight:600;margin-bottom:.2rem;">¿Terminaste este módulo?</div>
+      <div style="font-size:.73rem;color:var(--muted);">Márcalo como visto para actualizar tu progreso.</div>
+    </div>
+    <button id="markbtn-m7" class="btn" style="font-size:.78rem;padding:.45rem 1.1rem;" data-markid="m7">✓ Marcar como visto</button>
+  </div>
+</div>
+
+<!-- M8 -->
+<div class="panel" id="panel-m8">
+  <div class="lbl">// Módulo 08</div><h1 class="ptitle">📊 Métricas Ágiles</h1>
+  <p class="pdesc">Medir lo que importa: valor entregado, velocidad del flujo y calidad. Aprende a interpretar cada gráfico.</p>
+  <div class="sh">Métricas Clave</div>
+  <div class="mc-grid">
+    <div class="mc"><div class="mc-val">SP/S</div><div class="mc-lbl">Story Points por Sprint</div></div>
+    <div class="mc"><div class="mc-val">WIP</div><div class="mc-lbl">Work in Progress activo</div></div>
+    <div class="mc"><div class="mc-val">LT</div><div class="mc-lbl">Lead Time promedio</div></div>
+    <div class="mc"><div class="mc-val">CT</div><div class="mc-lbl">Cycle Time por ítem</div></div>
+    <div class="mc"><div class="mc-val">TH</div><div class="mc-lbl">Throughput ítems/semana</div></div>
+  </div>
+  <hr class="dv"><div class="sh">Burndown Chart</div>
+  <div class="g2">
+    <div class="card"><h4 style="font-size:.85rem;font-weight:600;margin-bottom:.4rem;">Sprint Burndown</h4><p style="font-size:.78rem;color:var(--muted);line-height:1.6;">Eje X: días del sprint. Eje Y: story points restantes. Línea real <strong style="color:var(--c4);">por encima</strong> = atrasado. <strong style="color:var(--c3);">Por debajo</strong> = adelantados.</p></div>
+    <div class="card"><h4 style="font-size:.85rem;font-weight:600;margin-bottom:.4rem;">Release Burndown</h4><p style="font-size:.78rem;color:var(--muted);line-height:1.6;">Eje X: sprints. Eje Y: story points restantes del release. Proyecta fecha de entrega según velocity actual.</p></div>
+  </div>
+  <div class="hi hi-warn"><div class="hi-title">⚠️ Flat line en Burndown</div><p>Línea plana = no se completan historias. Causas: impedimentos técnicos, bloqueos externos, o trabajo que no cumple el DoD. Debe atenderse inmediatamente.</p></div>
+  <hr class="dv"><div class="sh">Earned Value en Agile</div>
+  <table class="tbl"><thead><tr><th>Métrica</th><th>Fórmula</th><th>Interpretación</th></tr></thead><tbody>
+    <tr><td style="color:var(--text);font-weight:500;">EV</td><td style="font-family:'Space Mono',monospace;color:var(--agile);">% completado × BAC</td><td>Valor del trabajo completado</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">PV</td><td style="font-family:'Space Mono',monospace;color:var(--agile);">% planeado × BAC</td><td>Lo que debería haberse completado</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">AC</td><td style="font-family:'Space Mono',monospace;color:var(--agile);">Costo real gastado</td><td>Lo que realmente costó</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">SV</td><td style="font-family:'Space Mono',monospace;color:var(--agile);">EV − PV</td><td>Negativo = atrasado</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">CV</td><td style="font-family:'Space Mono',monospace;color:var(--agile);">EV − AC</td><td>Negativo = sobre presupuesto</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">SPI</td><td style="font-family:'Space Mono',monospace;color:var(--agile);">EV / PV</td><td>&lt;1 atrasado, &gt;1 adelantado</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">CPI</td><td style="font-family:'Space Mono',monospace;color:var(--agile);">EV / AC</td><td>&lt;1 sobre costo, &gt;1 bajo costo</td></tr>
+  </tbody></table>
+  <hr class="dv"><div class="sh">Métricas de Calidad</div>
+  <div class="g3">
+    <div class="card"><h4 style="font-size:.82rem;font-weight:600;margin-bottom:.4rem;">Escaped Defects</h4><p style="font-size:.76rem;color:var(--muted);line-height:1.5;">Defectos encontrados por el cliente en producción. Objetivo: cero. Indica calidad integrada deficiente.</p></div>
+    <div class="card"><h4 style="font-size:.82rem;font-weight:600;margin-bottom:.4rem;">Technical Debt</h4><p style="font-size:.76rem;color:var(--muted);line-height:1.5;">Deuda técnica por atajos. Se mide en "tiempo para limpiar". Alto tech debt reduce la velocity a largo plazo.</p></div>
+    <div class="card"><h4 style="font-size:.82rem;font-weight:600;margin-bottom:.4rem;">Test Coverage</h4><p style="font-size:.76rem;color:var(--muted);line-height:1.5;">% del código cubierto por pruebas. No garantiza calidad pero reduce riesgo de regresiones.</p></div>
+  </div>
+
+  <div id="mark-bar-m8" style="margin-top:2rem;padding:1rem 1.2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;">
+    <div>
+      <div style="font-size:.78rem;font-weight:600;margin-bottom:.2rem;">¿Terminaste este módulo?</div>
+      <div style="font-size:.73rem;color:var(--muted);">Márcalo como visto para actualizar tu progreso.</div>
+    </div>
+    <button id="markbtn-m8" class="btn" style="font-size:.78rem;padding:.45rem 1.1rem;" data-markid="m8">✓ Marcar como visto</button>
+  </div>
+</div>
+
+<!-- M9 -->
+<div class="panel" id="panel-m9">
+  <div class="lbl">// Módulo 09</div><h1 class="ptitle">🤝 Equipos & Liderazgo Ágil</h1>
+  <p class="pdesc">Formar equipos de alto desempeño y liderar con servicio es la habilidad más importante de un Agile PM.</p>
+  <div class="sh">Modelo Tuckman — 5 Etapas</div>
+  <div class="ga" style="margin:.5rem 0;">
+    <div class="card" style="border-top:3px solid var(--c0);"><h4 style="font-size:.82rem;font-weight:600;margin-bottom:.3rem;">1. Forming</h4><p style="font-size:.75rem;color:var(--muted);line-height:1.5;">El equipo se conoce. Alta incertidumbre. El líder da dirección clara y crea seguridad psicológica.</p></div>
+    <div class="card" style="border-top:3px solid var(--c2);"><h4 style="font-size:.82rem;font-weight:600;margin-bottom:.3rem;">2. Storming</h4><p style="font-size:.75rem;color:var(--muted);line-height:1.5;">Conflictos por roles e ideas. Normal y necesario. El facilitador ayuda a resolver constructivamente.</p></div>
+    <div class="card" style="border-top:3px solid var(--c5);"><h4 style="font-size:.82rem;font-weight:600;margin-bottom:.3rem;">3. Norming</h4><p style="font-size:.75rem;color:var(--muted);line-height:1.5;">El equipo establece acuerdos. La cohesión aumenta. El rol del líder se reduce.</p></div>
+    <div class="card" style="border-top:3px solid var(--c3);"><h4 style="font-size:.82rem;font-weight:600;margin-bottom:.3rem;">4. Performing</h4><p style="font-size:.75rem;color:var(--muted);line-height:1.5;">Alto rendimiento, auto-organización, resultados excepcionales. El líder delega y da autonomía.</p></div>
+    <div class="card" style="border-top:3px solid var(--c4);"><h4 style="font-size:.82rem;font-weight:600;margin-bottom:.3rem;">5. Adjourning</h4><p style="font-size:.75rem;color:var(--muted);line-height:1.5;">El equipo se disuelve. Momento de celebrar logros y cerrar relaciones.</p></div>
+  </div>
+  <div class="hi hi-warn"><div class="hi-title">⚠️ Clave del examen</div><p>Si alguien nuevo entra al equipo, puede regresar a Storming o Forming aunque ya estuviera en Performing. Los cambios de personal afectan la dinámica del equipo.</p></div>
+  <hr class="dv"><div class="sh">Servant Leadership</div>
+  <div class="g2">
+    <div class="card"><h4 style="font-size:.85rem;font-weight:600;margin-bottom:.4rem;">¿Qué es?</h4><p style="font-size:.78rem;color:var(--muted);line-height:1.6;">El líder sirve al equipo eliminando obstáculos y creando el ambiente para sobresalir. Robert Greenleaf (1970): <em>"El líder existe para servir, no para ser servido."</em></p></div>
+    <div class="card"><h4 style="font-size:.85rem;font-weight:600;margin-bottom:.4rem;">Características</h4><ul class="ul"><li>Escucha activa</li><li>Empatía hacia el equipo</li><li>Compromiso con el desarrollo de personas</li><li>Comunidad y colaboración</li><li>Persuasión sobre autoridad</li></ul></div>
+  </div>
+  <hr class="dv"><div class="sh">Resolución de Conflictos — Thomas-Kilmann</div>
+  <div class="ga">
+    <div class="card"><h4 style="font-size:.82rem;font-weight:600;margin-bottom:.3rem;">Colaborar</h4><p style="font-size:.74rem;color:var(--muted);line-height:1.5;">Ganar-Ganar. Mejor opción para conflictos importantes. Requiere tiempo y confianza.</p></div>
+    <div class="card"><h4 style="font-size:.82rem;font-weight:600;margin-bottom:.3rem;">Comprometer</h4><p style="font-size:.74rem;color:var(--muted);line-height:1.5;">Ceder-Ceder. Ambos dan algo. Para temas de importancia media.</p></div>
+    <div class="card"><h4 style="font-size:.82rem;font-weight:600;margin-bottom:.3rem;">Acomodar</h4><p style="font-size:.74rem;color:var(--muted);line-height:1.5;">Cuando la relación importa más que el tema en cuestión.</p></div>
+    <div class="card"><h4 style="font-size:.82rem;font-weight:600;margin-bottom:.3rem;">Competir</h4><p style="font-size:.74rem;color:var(--muted);line-height:1.5;">Solo en emergencias o temas no negociables.</p></div>
+    <div class="card"><h4 style="font-size:.82rem;font-weight:600;margin-bottom:.3rem;">Evitar</h4><p style="font-size:.74rem;color:var(--muted);line-height:1.5;">Para conflictos triviales o cuando se necesita tiempo para enfriarse.</p></div>
+  </div>
+
+  <div id="mark-bar-m9" style="margin-top:2rem;padding:1rem 1.2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;">
+    <div>
+      <div style="font-size:.78rem;font-weight:600;margin-bottom:.2rem;">¿Terminaste este módulo?</div>
+      <div style="font-size:.73rem;color:var(--muted);">Márcalo como visto para actualizar tu progreso.</div>
+    </div>
+    <button id="markbtn-m9" class="btn" style="font-size:.78rem;padding:.45rem 1.1rem;" data-markid="m9">✓ Marcar como visto</button>
+  </div>
+</div>
+
+<!-- M10 -->
+<div class="panel" id="panel-m10">
+  <div class="lbl">// Módulo 10</div><h1 class="ptitle">🏗️ Escalado Ágil</h1>
+  <p class="pdesc">Cuando Agile crece más allá de un equipo. SAFe, LeSS y Nexus son los frameworks más evaluados en el examen.</p>
+  <div class="g3">
+    <div class="card card-top" style="--card-color:var(--c0)"><div class="ct">SAFe</div><p style="font-size:.75rem;color:var(--muted);margin-bottom:.6rem;line-height:1.5;">Scaled Agile Framework. El más complejo. Niveles: Team → Program → Large Solution → Portfolio.</p><ul class="ul"><li>Agile Release Train (ART)</li><li>PI Planning cada 8-12 semanas</li><li>WSJF para priorización</li><li>Release Train Engineer (RTE)</li></ul></div>
+    <div class="card card-top" style="--card-color:var(--c1)"><div class="ct">LeSS</div><p style="font-size:.75rem;color:var(--muted);margin-bottom:.6rem;line-height:1.5;">Large-Scale Scrum. Mínima burocracia. Un solo PO, un Product Backlog, múltiples equipos Scrum.</p><ul class="ul"><li>1 PO para todos los equipos</li><li>Sprint sincronizado</li><li>Retrospectiva general</li><li>Feature teams</li></ul></div>
+    <div class="card card-top" style="--card-color:var(--c3)"><div class="ct">Nexus</div><p style="font-size:.75rem;color:var(--muted);margin-bottom:.6rem;line-height:1.5;">Framework de Scrum.org para 3-9 equipos. Agrega una Nexus Integration Team coordinadora.</p><ul class="ul"><li>Nexus Integration Team</li><li>Nexus Sprint Backlog compartido</li><li>Compatible con Scrum Guide</li><li>Resuelve integration issues</li></ul></div>
+  </div>
+  <hr class="dv"><div class="sh">SAFe — PI Planning & ROAM</div>
+  <div class="g2">
+    <div class="card"><h4 style="font-size:.85rem;font-weight:600;margin-bottom:.4rem;">PI Planning</h4><p style="font-size:.78rem;color:var(--muted);line-height:1.6;">Evento de 2 días donde todos los equipos del ART planifican juntos las próximas 8-12 semanas. Corazón de SAFe — sincroniza estrategia con ejecución.</p></div>
+    <div class="card"><h4 style="font-size:.85rem;font-weight:600;margin-bottom:.4rem;">ROAM — Gestión de Riesgos</h4><ul class="ul"><li><strong>R</strong>esolved — el riesgo ya no existe</li><li><strong>O</strong>wned — alguien se hace responsable</li><li><strong>A</strong>ccepted — se acepta conscientemente</li><li><strong>M</strong>itigated — plan para reducirlo</li></ul></div>
+  </div>
+  <hr class="dv"><div class="sh">Comparativa</div>
+  <table class="tbl"><thead><tr><th>Criterio</th><th>SAFe</th><th>LeSS</th><th>Nexus</th></tr></thead><tbody>
+    <tr><td style="color:var(--text);font-weight:500;">Complejidad</td><td>Alta</td><td>Baja-Media</td><td>Media</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">Tamaño ideal</td><td>50-10,000+</td><td>2-8 equipos</td><td>3-9 equipos</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">Base</td><td>Lean + Agile + Scrum</td><td>Scrum puro</td><td>Scrum puro</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">Estructura</td><td>Muy prescriptiva</td><td>Ligera</td><td>Moderada</td></tr>
+  </tbody></table>
+
+  <div id="mark-bar-m10" style="margin-top:2rem;padding:1rem 1.2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;">
+    <div>
+      <div style="font-size:.78rem;font-weight:600;margin-bottom:.2rem;">¿Terminaste este módulo?</div>
+      <div style="font-size:.73rem;color:var(--muted);">Márcalo como visto para actualizar tu progreso.</div>
+    </div>
+    <button id="markbtn-m10" class="btn" style="font-size:.78rem;padding:.45rem 1.1rem;" data-markid="m10">✓ Marcar como visto</button>
+  </div>
+</div>
+
+<!-- M11 -->
+<div class="panel" id="panel-m11">
+  <div class="lbl">// Módulo 11</div><h1 class="ptitle">🛡️ Riesgos & Contratos Ágiles</h1>
+  <p class="pdesc">Cómo Agile gestiona la incertidumbre sin contratos rígidos y con técnicas específicas de mitigación.</p>
+  <div class="g2">
+    <div class="card card-top" style="--card-color:var(--c4)"><div class="ct">Tipos de Riesgo</div><ul class="ul"><li><strong>Técnico</strong> — complejidad, tecnología nueva</li><li><strong>Negocio</strong> — cambio de prioridades del cliente</li><li><strong>Personas</strong> — rotación, habilidades</li><li><strong>Externo</strong> — regulaciones, mercado</li></ul></div>
+    <div class="card card-top" style="--card-color:var(--c2)"><div class="ct">Respuestas al Riesgo</div><ul class="ul"><li><strong>Evitar</strong> — cambiar el plan para eliminarlo</li><li><strong>Mitigar</strong> — reducir probabilidad o impacto</li><li><strong>Transferir</strong> — seguros, contratos</li><li><strong>Aceptar</strong> — conscientemente asumirlo</li></ul></div>
+  </div>
+  <hr class="dv"><div class="sh">Herramientas de Riesgo Ágil</div>
+  <div class="acc open"><div class="acc-h">🦔 Risk-Adjusted Backlog & Spike<span class="acc-arrow">▼</span></div><div class="acc-body">Los riesgos se convierten en ítems del backlog priorizados por probabilidad × impacto. Los <strong>Spikes</strong> son historias técnicas time-boxed para investigar y reducir incertidumbre — producen conocimiento, no features. Resultado: recomendación o prototipo.</div></div>
+  <div class="acc"><div class="acc-h">📉 Risk Burndown Chart<span class="acc-arrow">▼</span></div><div class="acc-body">Mide la exposición al riesgo a lo largo del tiempo. A medida que se completan spikes y mitigaciones, el riesgo total disminuye. Se actualiza cada sprint.</div></div>
+  <div class="acc"><div class="acc-h">🗺️ Risk Matrix (Probabilidad × Impacto)<span class="acc-arrow">▼</span></div><div class="acc-body">Cuadrante con probabilidad vs. impacto. Riesgos en cuadrante alta-alta son prioritarios. En Agile se actualiza cada sprint — los riesgos no son estáticos.</div></div>
+  <hr class="dv"><div class="sh">Contratos Ágiles</div>
+  <div class="hi hi-info"><div class="hi-title">💡 El dilema</div><p>Contratos tradicionales fijan scope, tiempo y costo. En Agile el scope es variable. La solución: fijar tiempo y costo, ser flexible en el alcance.</p></div>
+  <table class="tbl"><thead><tr><th>Tipo</th><th>Descripción</th><th>Cuándo usar</th></tr></thead><tbody>
+    <tr><td style="color:var(--text);font-weight:500;">Time &amp; Materials</td><td>Se paga por horas y materiales reales</td><td>Scope incierto, relación de confianza</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">Fixed Price</td><td>Precio fijo por entregables definidos</td><td>Scope muy claro y estable</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">Money for Nothing</td><td>El cliente puede cancelar si no hay valor; cambios sin costo adicional</td><td>Alta colaboración cliente-proveedor</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">Incentive-Based</td><td>Bonus por entregas tempranas o calidad</td><td>Alinear incentivos entre partes</td></tr>
+  </tbody></table>
+
+  <div id="mark-bar-m11" style="margin-top:2rem;padding:1rem 1.2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;">
+    <div>
+      <div style="font-size:.78rem;font-weight:600;margin-bottom:.2rem;">¿Terminaste este módulo?</div>
+      <div style="font-size:.73rem;color:var(--muted);">Márcalo como visto para actualizar tu progreso.</div>
+    </div>
+    <button id="markbtn-m11" class="btn" style="font-size:.78rem;padding:.45rem 1.1rem;" data-markid="m11">✓ Marcar como visto</button>
+  </div>
+</div>
+
+<!-- FLASHCARDS -->
+<div class="panel" id="panel-flashcards">
+  <div class="lbl">// Práctica</div><h1 class="ptitle">🃏 Flashcards</h1>
+  <p class="pdesc">Haz clic en la tarjeta para ver la respuesta. Navega con los botones.</p>
+  <div class="fc-scene"><div class="fc-card" id="fc-card">
+    <div class="fc-face fc-front"><div class="fc-label">Pregunta</div><div class="fc-text" id="fc-q"></div><div class="fc-hint">Toca para ver la respuesta →</div></div>
+    <div class="fc-face fc-back"><div class="fc-label">Respuesta</div><div class="fc-text" id="fc-a"></div></div>
+  </div></div>
+  <div class="fc-nav" style="margin-top:.8rem;">
+    <button class="btn btn-ghost" id="fc-prev">← Anterior</button>
+    <span class="fc-ctr" id="fc-ctr"></span>
+    <button class="btn" id="fc-next">Siguiente →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="panel" id="panel-quiz">
+  <div class="lbl">// Práctica</div><h1 class="ptitle">🧠 Quiz de Práctica</h1>
+  <p class="pdesc">Preguntas tipo examen PMI-ACP con explicaciones detalladas al responder.</p>
+  <div class="quiz-wrap" id="quiz-wrap">
+    <div class="quiz-q" id="quiz-q"></div>
+    <div class="quiz-opts" id="quiz-opts"></div>
+    <div class="quiz-fb" id="quiz-fb"></div>
+    <div class="quiz-nav"><span class="quiz-ctr" id="quiz-ctr"></span><button class="btn" id="quiz-next" disabled>Siguiente →</button></div>
+  </div>
+</div>
+
+<!-- PLAN -->
+<div class="panel" id="panel-plan">
+  <div class="lbl">// Tu hoja de ruta</div><h1 class="ptitle">📅 Plan de Estudio — 8 Semanas</h1>
+  <p class="pdesc">Un plan realista para prepararse trabajando ~2 horas diarias a tiempo parcial.</p>
+  <div class="tl" id="tl-container"></div>
+  <hr class="dv"><div class="sh">Recursos Recomendados</div>
+  <table class="tbl"><thead><tr><th>Recurso</th><th>Tipo</th><th>Por qué</th></tr></thead><tbody>
+    <tr><td style="color:var(--text);font-weight:500;">Agile Practice Guide (PMI)</td><td>Libro oficial</td><td>Gratis para miembros PMI. La biblia del examen.</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">PMI-ACP Exam Prep — Mike Griffiths</td><td>Prep book</td><td>El más completo y alineado al examen.</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">Scrum Guide (scrumguides.org)</td><td>Guía oficial</td><td>Gratuito. Fuente primaria para preguntas de Scrum.</td></tr>
+    <tr><td style="color:var(--text);font-weight:500;">PMTraining / Agile PrepCast</td><td>Simulacros</td><td>Preguntas tipo examen con explicaciones.</td></tr>
+  </tbody></table>
+  <div class="hi hi-ok"><div class="hi-title">✅ Consejos del día del examen</div><p>• Llega 30 min antes.<br>• 120 preguntas, 3 horas = 1.5 min/pregunta.<br>• Marca las dudosas y regresa al final.<br>• Cuando dudes, elige la más "ágil": colaborar → comunicar → adaptar.</p></div>
+</div>
+
+<!-- TRACKER -->
+<div class="panel" id="panel-tracker">
+  <div class="lbl">// Mi Progreso</div><h1 class="ptitle">✅ Mi Progreso</h1>
+  <p class="pdesc">Marca los temas que ya dominas — ya sea por haber estudiado el módulo o por conocimiento previo. El avance se refleja en la barra lateral y en los módulos.</p>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin-bottom:1rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;">
+      <span style="font-weight:600;font-size:.9rem;">Progreso General</span>
+      <span id="tracker-badge" style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--agile);background:rgba(0,212,255,.1);padding:.2rem .7rem;border-radius:100px;">0 / 11 módulos</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+    <div class="prog-lbl" id="prog-lbl">0%</div>
+  </div>
+  <div id="tracker-modules"></div>
+</div>
+
+</div><!-- /main -->
+<script>
+var TITLES={home:'Dashboard',overview:'Vista General',m1:'M1 · Manifiesto Ágil',m2:'M2 · Scrum',m3:'M3 · Kanban',m4:'M4 · XP',m5:'M5 · Lean Agile',m6:'M6 · Estimación',m7:'M7 · Backlog',m8:'M8 · Métricas',m9:'M9 · Equipos',m10:'M10 · Escalado',m11:'M11 · Riesgos',flashcards:'Flashcards',quiz:'Quiz de Práctica',plan:'Plan 8 Semanas',tracker:'Mi Progreso'};
+
+// ── HERO COLLAPSE ────────────────────────────────────────────────────
+var NON_HOME_IDS=['m1','m2','m3','m4','m5','m6','m7','m8','m9','m10','m11','overview','flashcards','quiz','plan','tracker'];
+
+function setHeroMode(id){
+  var hf=document.getElementById('hero-full');
+  var hm=document.getElementById('hero-mini');
+  if(!hf||!hm)return;
+  if(NON_HOME_IDS.indexOf(id)>-1){hf.style.display='none';hm.style.display='flex';}
+  else{hf.style.display='';hm.style.display='none';}
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────────────
+function navTo(id){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  var p=document.getElementById('panel-'+id);
+  if(p)p.classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(function(i){i.classList.remove('active');});
+  var s=document.querySelector('.sb-item[data-id="'+id+'"]');
+  if(s)s.classList.add('active');
+  var t=document.getElementById('top-title');
+  if(t)t.textContent=TITLES[id]||id;
+  setHeroMode(id);
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  window.scrollTo(0,0);
+  if(id==='overview'){setTimeout(function(){document.querySelectorAll('.dbr-fill').forEach(function(b){b.style.width=b.getAttribute('data-w')+'%';});},150);}
+}
+
+// Sidebar items
+document.querySelectorAll('.sb-item').forEach(function(el){
+  el.addEventListener('click',function(){navTo(el.getAttribute('data-id'));});
+});
+// Module buttons (home grid + practice)
+document.querySelectorAll('.mod-btn').forEach(function(el){
+  el.addEventListener('click',function(){navTo(el.getAttribute('data-nav'));});
+});
+// Hero-mini home button
+document.getElementById('hero-mini-home-btn').addEventListener('click',function(){navTo('home');});
+
+// Hamburger / overlay
+document.getElementById('hbg').addEventListener('click',function(){
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+});
+document.getElementById('overlay').addEventListener('click',function(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+});
+
+// Sidebar search
+document.getElementById('sb-input').addEventListener('input',function(){
+  var v=this.value.toLowerCase();
+  document.querySelectorAll('.sb-item').forEach(function(el){
+    el.style.display=(!v||el.textContent.toLowerCase().includes(v))?'':'none';
+  });
+  document.querySelectorAll('[data-group]').forEach(function(g){
+    g.style.display=v?'none':'';
+  });
+});
+
+// Accordions
+document.querySelectorAll('.acc-h').forEach(function(h){
+  h.addEventListener('click',function(){h.parentElement.classList.toggle('open');});
+});
+
+// ── FLASHCARDS ───────────────────────────────────────────────────────
+var FC=[
+  {q:'¿Cuántos valores tiene el Manifiesto Ágil?',a:'4 valores. El Manifiesto también tiene 12 principios. Ambos son evaluados en el examen PMI-ACP.'},
+  {q:'Define Velocity en Scrum.',a:'Suma de story points de historias completadas en un sprint. Se promedia sobre los últimos 3 sprints para planificación.'},
+  {q:'¿Qué mide el Lead Time en Kanban?',a:'El tiempo desde que el cliente hace la solicitud hasta que recibe la entrega. Siempre mayor o igual al Cycle Time.'},
+  {q:'¿Cuáles son las 3 preguntas del Daily Scrum?',a:'1) ¿Qué hice ayer? 2) ¿Qué haré hoy? 3) ¿Hay algún impedimento? Objetivo: sincronización, no reporte de estado.'},
+  {q:'¿Qué significa INVEST en User Stories?',a:'Independiente, Negociable, Valiosa, Estimable, Small (pequeña) y Testeable.'},
+  {q:'¿Qué es el Cone of Uncertainty?',a:'La incertidumbre al inicio del proyecto es ±400% y disminuye conforme avanza. Justifica no planificar todo al inicio.'},
+  {q:"¿Cuál es la fórmula de Little's Law?",a:'WIP = Throughput × Lead Time. Reducir WIP (con throughput constante) reduce el Lead Time directamente.'},
+  {q:'¿Cuáles son los 3 pilares de Scrum?',a:'Transparencia, Inspección y Adaptación — los fundamentos del empirismo en Scrum.'},
+  {q:'¿Qué es un Spike en Agile?',a:'Historia técnica time-boxed para investigar y reducir incertidumbre. Produce conocimiento, no features.'},
+  {q:'¿Cuáles son las 5 etapas del modelo Tuckman?',a:'Forming, Storming, Norming, Performing y Adjourning. Un nuevo miembro puede regresar al equipo a etapas anteriores.'},
+  {q:'¿Qué es TDD y cuál es su ciclo?',a:'Test-Driven Development. Ciclo: RED (prueba que falla) → GREEN (código mínimo) → REFACTOR (mejorar sin romper).'},
+  {q:'¿Qué es el Definition of Done?',a:'Criterios que debe cumplir un incremento para considerarse completo. Lo define el equipo y aplica a todas las historias.'},
+  {q:'¿Cuáles son los 7 desperdicios Lean?',a:'Sobreproducción, Inventario, Movimiento, Espera, Defectos, Sobreprocesamiento y Transporte innecesario.'},
+  {q:'¿Qué es WSJF en SAFe?',a:'Weighted Shortest Job First. WSJF = Costo del Retraso / Tamaño. Prioriza máximo impacto con mínimo esfuerzo.'},
+  {q:'¿Cuándo se acepta un riesgo en ROAM?',a:'Accepted: el equipo reconoce el riesgo y decide no actuar, porque el impacto es bajo o no hay mitigación viable.'},
+  {q:'¿Qué diferencia al Scrum Master de un Gerente de Proyecto?',a:'El SM es servant leader que facilita y elimina impedimentos. NO asigna tareas, NO toma decisiones técnicas.'},
+];
+var fcIdx=0;
+function renderFC(){
+  var card=document.getElementById('fc-card');
+  if(!card)return;
+  card.classList.remove('flipped');
+  document.getElementById('fc-q').textContent=FC[fcIdx].q;
+  document.getElementById('fc-a').textContent=FC[fcIdx].a;
+  document.getElementById('fc-ctr').textContent=(fcIdx+1)+' / '+FC.length;
+}
+document.getElementById('fc-card').addEventListener('click',function(){this.classList.toggle('flipped');});
+document.getElementById('fc-next').addEventListener('click',function(){fcIdx=(fcIdx+1)%FC.length;renderFC();});
+document.getElementById('fc-prev').addEventListener('click',function(){fcIdx=(fcIdx-1+FC.length)%FC.length;renderFC();});
+renderFC();
+
+// ── QUIZ ─────────────────────────────────────────────────────────────
+var QS=[
+  {q:'Tu equipo Scrum completó el sprint pero el cliente no está satisfecho. ¿Cuál es la MEJOR acción?',opts:['Extender el sprint hasta que el cliente quede satisfecho','Llevar el feedback a la retrospectiva y ajustar el backlog en el próximo planning','Escalar el problema al director de proyecto','Pedir al cliente requisitos por escrito'],ans:1,ex:'La retrospectiva procesa aprendizajes y el siguiente sprint planning incorpora el feedback. Extender el sprint viola el time-boxing de Scrum.'},
+  {q:'¿Cuál es la diferencia PRINCIPAL entre Lead Time y Cycle Time en Kanban?',opts:['Son sinónimos','Lead Time inicia con la solicitud del cliente; Cycle Time cuando el equipo comienza a trabajar','Cycle Time incluye aprobación del cliente; Lead Time no','Lead Time se mide en días; Cycle Time en horas'],ans:1,ex:'Lead Time = solicitud a entrega. Cycle Time = inicio del trabajo activo a entrega. Lead Time siempre mayor o igual al Cycle Time.'},
+  {q:'Un equipo XP quiere asegurar la calidad desde el inicio. ¿Qué práctica implementar PRIMERO?',opts:['Pair Programming','Collective Code Ownership','Test-Driven Development (TDD)','Continuous Integration'],ans:2,ex:'TDD es la práctica fundamental: las pruebas guían el diseño y garantizan calidad desde la primera línea de código.'},
+  {q:'Según Lean, ¿cuándo debe tomarse una decisión arquitectónica importante?',opts:['Al inicio del proyecto','Lo más tarde posible, cuando se tenga la mayor información disponible','Durante el PI Planning','Cuando el cliente lo solicite'],ans:1,ex:'Lean promueve el Last Responsible Moment: decidir cuando se tiene más información y preservar opciones el mayor tiempo posible.'},
+  {q:'El equipo tiene conflictos frecuentes sobre cómo estructurar el código. Según Tuckman, ¿en qué etapa están?',opts:['Forming','Storming','Norming','Performing'],ans:1,ex:'Storming es la etapa de conflicto y negociación de roles. Es normal y necesaria para que el equipo avance.'},
+  {q:'¿Qué técnica prioriza features según el costo de retrasar su entrega dividido por el tamaño del trabajo?',opts:['MoSCoW','Modelo Kano','WSJF — Weighted Shortest Job First','Planning Poker'],ans:2,ex:'WSJF = Costo del Retraso / Tamaño del Job. Usada en SAFe para maximizar el valor entregado.'},
+  {q:"Un equipo tiene WIP=15 y throughput=3 ítems/semana. ¿Cuál es el Lead Time según Little's Law?",opts:['5 semanas','45 semanas','3 semanas','15 semanas'],ans:0,ex:"Little's Law: 15 = 3 × LT → LT = 5 semanas."},
+  {q:'Un stakeholder pide un reporte semanal detallado. ¿Cuál es la respuesta más ágil del Scrum Master?',opts:['Crear el reporte semanalmente','Invitar al stakeholder a la Sprint Review para ver el incremento real','Pedir tracking en horas','Explicar que los reportes son desperdicio'],ans:1,ex:'La Sprint Review muestra valor real con el incremento funcional y permite feedback directo. Es el mecanismo ágil correcto.'},
+  {q:'¿Qué indica una línea PLANA en un Sprint Burndown Chart?',opts:['El equipo trabaja a ritmo perfecto','Hay impedimentos bloqueando el progreso','El sprint va adelantado','La velocity aumenta'],ans:1,ex:'Línea plana = no se completan historias. Causas: impedimentos, bloqueos externos o trabajo que no cumple el DoD.'},
+  {q:'En SAFe, ¿cuál es el propósito PRINCIPAL del PI Planning?',opts:['Asignar tareas individuales','Sincronizar todos los equipos del ART y planificar el próximo Program Increment','Revisar el código y aprobar el release','Definir el backlog de producto'],ans:1,ex:'PI Planning alinea estrategia con ejecución. Todos los equipos del ART planifican juntos las próximas 8-12 semanas.'},
+];
+var qIdx=0,qScore=0,qAnswered=false;
+function loadQ(){
+  if(qIdx>=QS.length){showQResult();return;}
+  var q=QS[qIdx];
+  var qEl=document.getElementById('quiz-q');
+  if(!qEl)return;
+  qEl.textContent=q.q;
+  document.getElementById('quiz-ctr').textContent='Pregunta '+(qIdx+1)+' de '+QS.length;
+  var fb=document.getElementById('quiz-fb');
+  fb.className='quiz-fb';fb.textContent='';
+  document.getElementById('quiz-next').disabled=true;
+  qAnswered=false;
+  var opts=document.getElementById('quiz-opts');
+  opts.innerHTML='';
+  q.opts.forEach(function(opt,i){
+    var btn=document.createElement('button');
+    btn.className='quiz-opt';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){
+      if(qAnswered)return;
+      qAnswered=true;
+      document.querySelectorAll('.quiz-opt').forEach(function(o,idx){
+        o.disabled=true;
+        if(idx===q.ans)o.classList.add('correct');
+        else if(idx===i&&i!==q.ans)o.classList.add('wrong');
+      });
+      if(i===q.ans)qScore++;
+      var fb2=document.getElementById('quiz-fb');
+      fb2.className='quiz-fb show '+(i===q.ans?'ok':'fail');
+      fb2.textContent=q.ex;
+      document.getElementById('quiz-next').disabled=false;
+    });
+    opts.appendChild(btn);
+  });
+}
+function showQResult(){
+  var pct=Math.round(qScore/QS.length*100);
+  var wrap=document.getElementById('quiz-wrap');
+  if(!wrap)return;
+  var result=document.createElement('div');
+  result.style.cssText='text-align:center;padding:2rem;';
+  var icon=document.createElement('div');icon.style.cssText='font-size:3rem;margin-bottom:1rem;';icon.textContent=pct>=70?'🎉':'📚';
+  var score=document.createElement('div');score.style.cssText="font-family:'Space Mono',monospace;font-size:2rem;font-weight:700;color:var(--agile);margin-bottom:.5rem;";score.textContent=qScore+'/'+QS.length+' — '+pct+'%';
+  var msg=document.createElement('p');msg.style.cssText='color:var(--muted);margin-bottom:1.5rem;';msg.textContent=pct>=70?'¡Excelente! Estás en el camino correcto.':'Sigue repasando los módulos donde fallaste.';
+  var btn=document.createElement('button');btn.className='btn';btn.textContent='Intentar de nuevo';
+  btn.addEventListener('click',function(){
+    qIdx=0;qScore=0;qAnswered=false;
+    wrap.innerHTML='<div class="quiz-q" id="quiz-q"></div><div class="quiz-opts" id="quiz-opts"></div><div class="quiz-fb" id="quiz-fb"></div><div class="quiz-nav"><span class="quiz-ctr" id="quiz-ctr"></span><button class="btn" id="quiz-next" disabled>Siguiente →</button></div>';
+    document.getElementById('quiz-next').addEventListener('click',function(){qIdx++;loadQ();});
+    loadQ();
+  });
+  result.appendChild(icon);result.appendChild(score);result.appendChild(msg);result.appendChild(btn);
+  wrap.innerHTML='';wrap.appendChild(result);
+}
+document.getElementById('quiz-next').addEventListener('click',function(){qIdx++;loadQ();});
+loadQ();
+
+// ── PLAN TIMELINE ────────────────────────────────────────────────────
+var WEEKS=[
+  {week:'Semana 1',color:'#00d4ff',title:'Fundamentos — Manifiesto & Mentalidad',desc:'Lee el Manifiesto Ágil completo. Memoriza 4 valores y 12 principios. Módulo 1. Lectura: Agile Practice Guide cap. 1-2.',tags:['Módulo 1','Manifiesto','Valores']},
+  {week:'Semana 2',color:'#7c3aed',title:'Scrum en Profundidad',desc:'Scrum Guide completo (gratuito). Módulo 2. 30 preguntas situacionales. Foco en eventos, DoD y rol del Scrum Master.',tags:['Módulo 2','Scrum Guide','DoD/DoR']},
+  {week:'Semana 3',color:'#f59e0b',title:'Kanban & XP',desc:"Módulos 3 y 4. Cálculos de Lead Time, Cycle Time y Little's Law. TDD, pair programming y sustainable pace. 40 preguntas.",tags:['Módulo 3','Módulo 4','TDD']},
+  {week:'Semana 4',color:'#f43f5e',title:'Lean, Estimación & Backlog',desc:'Módulos 5, 6 y 7. Los 7 desperdicios. Planning Poker. MoSCoW, Kano, WSJF. 40 preguntas.',tags:['Módulo 5','Módulo 6','Módulo 7']},
+  {week:'Semana 5',color:'#10b981',title:'Métricas, Equipos & Liderazgo',desc:'Módulos 8 y 9. Burndown charts, fórmulas EV. Tuckman, servant leadership. Simulacro de 50 preguntas.',tags:['Módulo 8','Módulo 9','EV Ágil']},
+  {week:'Semana 6',color:'#8b5cf6',title:'Escalado, Riesgos & Casos Complejos',desc:'Módulos 10 y 11. SAFe, LeSS y Nexus. Gestión de riesgos, spikes y contratos ágiles.',tags:['Módulo 10','Módulo 11','SAFe']},
+  {week:'Semana 7',color:'#06b6d4',title:'Simulacros Intensivos',desc:'2 simulacros completos de 120 preguntas. Analiza cada error. Usa PMTraining o Agile PrepCast. Meta: superar 75%.',tags:['200 preguntas','Simulacros']},
+  {week:'Semana 8',color:'#f59e0b',title:'Revisión Final & Descanso',desc:'Repasa notas y flashcards. Un simulacro más a mitad de semana. Últimos 2 días: descansa y confía en tu preparación.',tags:['Revisión','🎯 Examen']},
+];
+var tlContainer=document.getElementById('tl-container');
+if(tlContainer){
+  WEEKS.forEach(function(w){
+    var item=document.createElement('div');item.className='tl-item';
+    item.innerHTML='<div class="tl-dot" style="background:'+w.color+';"></div>'
+      +'<div class="tl-week" style="color:'+w.color+';">'+w.week+'</div>'
+      +'<div class="tl-title">'+w.title+'</div>'
+      +'<div class="tl-desc">'+w.desc+'</div>'
+      +'<div class="tags">'+w.tags.map(function(t){return '<span class="tag">'+t+'</span>';}).join('')+'</div>';
+    tlContainer.appendChild(item);
+  });
+}
+
+// ── MODULE TRACKING ───────────────────────────────────────────────────
+var MODULE_IDS=['m1','m2','m3','m4','m5','m6','m7','m8','m9','m10','m11'];
+var MODULE_INFO={
+  m1:{label:'M1 · Manifiesto Ágil',icon:'📜',topics:['4 Valores del Manifiesto','12 Principios']},
+  m2:{label:'M2 · Scrum',icon:'🔄',topics:['Roles, eventos y artefactos','DoD, DoR y Sprint Goal']},
+  m3:{label:'M3 · Kanban',icon:'🏷️',topics:['WIP limits y métricas',"Lead Time, Cycle Time y Little's Law"]},
+  m4:{label:'M4 · XP',icon:'💻',topics:['Prácticas técnicas (TDD, Pair Prog.)','Valores y roles XP']},
+  m5:{label:'M5 · Lean Agile',icon:'♻️',topics:['7 Desperdicios Lean + VSM','7 Principios Lean']},
+  m6:{label:'M6 · Estimación',icon:'🎯',topics:['Planning Poker y story points','Velocity y Cone of Uncertainty']},
+  m7:{label:'M7 · Backlog',icon:'📋',topics:['User Stories formato INVEST','MoSCoW, Kano y WSJF']},
+  m8:{label:'M8 · Métricas',icon:'📊',topics:['Burndown Chart','Earned Value Ágil (SPI, CPI)']},
+  m9:{label:'M9 · Equipos',icon:'🤝',topics:['Modelo Tuckman (5 etapas)','Servant Leadership']},
+  m10:{label:'M10 · Escalado',icon:'🏗️',topics:['SAFe, LeSS y Nexus','PI Planning y ROAM']},
+  m11:{label:'M11 · Riesgos',icon:'🛡️',topics:['Gestión de riesgos y spikes','Contratos ágiles']},
+};
+var doneModules=new Set();
+
+function toggleModuleDone(mid){
+  if(doneModules.has(mid)){doneModules.delete(mid);}
+  else{doneModules.add(mid);}
+  syncAll();
+}
+
+function syncAll(){
+  var total=MODULE_IDS.length;
+  var done=doneModules.size;
+  var pct=Math.round(done/total*100);
+  // Sidebar + topbar progress
+  var sf=document.getElementById('sb-fill');if(sf)sf.style.width=pct+'%';
+  var sp=document.getElementById('sb-pct');if(sp)sp.textContent=pct+'%';
+  var tb=document.getElementById('top-badge');if(tb)tb.textContent=done+' / '+total+' módulos';
+  var pf=document.getElementById('prog-fill');if(pf)pf.style.width=pct+'%';
+  var pl=document.getElementById('prog-lbl');if(pl)pl.textContent=pct+'%';
+  var badge=document.getElementById('tracker-badge');if(badge)badge.textContent=done+' / '+total+' módulos';
+  // Per-module UI updates
+  MODULE_IDS.forEach(function(mid){
+    var isDone=doneModules.has(mid);
+    // Mark button inside the module panel
+    var btn=document.getElementById('markbtn-'+mid);
+    if(btn){
+      btn.textContent=isDone?'✓ Visto':'✓ Marcar como visto';
+      btn.style.background=isDone?'var(--c3)':'var(--agile)';
+    }
+    var bar=document.getElementById('mark-bar-'+mid);
+    if(bar){
+      bar.style.borderColor=isDone?'rgba(16,185,129,.3)':'var(--border)';
+      bar.style.background=isDone?'rgba(16,185,129,.06)':'var(--card)';
+    }
+    // Home grid card
+    var hmod=document.getElementById('hmod-'+mid);
+    if(hmod){
+      hmod.style.borderColor=isDone?'rgba(16,185,129,.5)':'var(--border)';
+      hmod.style.background=isDone?'rgba(16,185,129,.06)':'var(--card)';
+      var existBadge=hmod.querySelector('.done-badge');
+      if(isDone&&!existBadge){
+        var b=document.createElement('div');
+        b.className='done-badge';
+        b.style.cssText='position:absolute;top:4px;right:6px;font-size:.65rem;color:var(--c3);font-weight:700;';
+        b.textContent='✓';
+        hmod.style.position='relative';
+        hmod.appendChild(b);
+      }else if(!isDone&&existBadge){existBadge.remove();}
+    }
+    // Sidebar dot
+    var sbItem=document.querySelector('.sb-item[data-id="'+mid+'"]');
+    if(sbItem){
+      var dot=sbItem.querySelector('.sb-dot');
+      if(dot)dot.style.background=isDone?'var(--c3)':'';
+    }
+  });
+  buildTrackerModules();
+}
+
+function buildTrackerModules(){
+  var container=document.getElementById('tracker-modules');
+  if(!container)return;
+  container.innerHTML='';
+  MODULE_IDS.forEach(function(mid){
+    var info=MODULE_INFO[mid];
+    var isDone=doneModules.has(mid);
+    var div=document.createElement('div');
+    div.style.cssText='background:'+(isDone?'rgba(16,185,129,.04)':'var(--card)')+';border:1px solid '+(isDone?'rgba(16,185,129,.3)':'var(--border)')+';border-radius:12px;padding:1rem 1.2rem;margin-bottom:.7rem;';
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;';
+    // Left: icon + info
+    var left=document.createElement('div');
+    left.style.cssText='display:flex;align-items:center;gap:.7rem;cursor:pointer;';
+    left.setAttribute('data-nav', mid);
+    left.title='Ir al módulo';
+    var icon=document.createElement('span');icon.style.fontSize='1.2rem';icon.textContent=info.icon;
+    var textDiv=document.createElement('div');
+    var labelEl=document.createElement('div');
+    labelEl.style.cssText='font-size:.85rem;font-weight:600;color:'+(isDone?'var(--c3)':'var(--text)')+';';
+    labelEl.textContent=info.label;
+    var topicsEl=document.createElement('div');
+    topicsEl.style.cssText='font-size:.72rem;color:var(--muted);margin-top:.12rem;';
+    topicsEl.textContent=info.topics.join(' · ');
+    textDiv.appendChild(labelEl);textDiv.appendChild(topicsEl);
+    left.appendChild(icon);left.appendChild(textDiv);
+    // Right: toggle button
+    var btn=document.createElement('button');
+    btn.className='btn';
+    btn.style.cssText='font-size:.75rem;padding:.38rem .9rem;background:'+(isDone?'var(--c3)':'var(--agile)')+';';
+    btn.textContent=isDone?'✓ Visto':'Marcar visto';
+    btn.setAttribute('data-markid', mid);
+    row.appendChild(left);row.appendChild(btn);
+    div.appendChild(row);
+    container.appendChild(div);
+  });
+}
+
+// ── DELEGATE EVENT: data-markid buttons & data-nav links ─────────────
+document.addEventListener('click',function(e){
+  var markBtn=e.target.closest('[data-markid]');
+  if(markBtn){toggleModuleDone(markBtn.getAttribute('data-markid'));return;}
+  var navEl=e.target.closest('[data-nav]');
+  if(navEl&&!navEl.classList.contains('mod-btn')){navTo(navEl.getAttribute('data-nav'));}
+});
+
+// ── INIT ─────────────────────────────────────────────────────────────
+buildTrackerModules();
+syncAll();
+setHeroMode('home');
+// ── MODULE NAV BAR ──────────────────────────────────────────────────
+var MNB_IDS=['m1','m2','m3','m4','m5','m6','m7','m8','m9','m10','m11'];
+var mnbBar=document.getElementById('mod-nav-bar');
+
+function updateNavBar(id){
+  if(!mnbBar)return;
+  var isModule=MNB_IDS.indexOf(id)>-1;
+  if(isModule){mnbBar.classList.add('visible');}else{mnbBar.classList.remove('visible');}
+  // highlight active
+  MNB_IDS.forEach(function(mid){
+    var btn=document.getElementById('mnb-'+mid);
+    if(!btn)return;
+    btn.classList.toggle('active', mid===id);
+    btn.classList.toggle('done-m', doneModules.has(mid));
+  });
+  // scroll active btn into view
+  var activeBtn=document.getElementById('mnb-'+id);
+  if(activeBtn)activeBtn.scrollIntoView({block:'nearest',inline:'center'});
+  // prev/next state
+  var idx=MNB_IDS.indexOf(id);
+  var prevBtn=document.getElementById('mnb-prev');
+  var nextBtn=document.getElementById('mnb-next');
+  if(prevBtn)prevBtn.disabled=idx<=0;
+  if(nextBtn)nextBtn.disabled=idx>=MNB_IDS.length-1;
+}
+
+// Nav bar button clicks
+document.getElementById('mod-nav-bar').addEventListener('click',function(e){
+  var btn=e.target.closest('[data-nav]');
+  if(btn){navTo(btn.getAttribute('data-nav'));return;}
+  if(e.target.id==='mnb-prev'||e.target.closest('#mnb-prev')){
+    var cur=MNB_IDS.indexOf(document.querySelector('.sb-item.active').getAttribute('data-id'));
+    if(cur>0)navTo(MNB_IDS[cur-1]);
+    return;
+  }
+  if(e.target.id==='mnb-next'||e.target.closest('#mnb-next')){
+    var cur2=MNB_IDS.indexOf(document.querySelector('.sb-item.active').getAttribute('data-id'));
+    if(cur2<MNB_IDS.length-1)navTo(MNB_IDS[cur2+1]);
+  }
+});
+
+// Patch navTo to also update nav bar
+var _nav2=navTo;
+navTo=function(id){_nav2(id);updateNavBar(id);};
+
+// Patch syncAll to refresh done states on bar
+var _sync2=syncAll;
+syncAll=function(){_sync2();updateNavBar(document.querySelector('.sb-item.active')?document.querySelector('.sb-item.active').getAttribute('data-id'):'home');};
+
+updateNavBar('home');
+
+</script>
+</body>
+</html>
